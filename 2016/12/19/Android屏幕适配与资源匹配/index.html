@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Android屏幕适配与资源匹配 | 郭晋宇的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android屏幕适配是个头疼的问题，同时关于这方面的讲解也是烂大街了，那么为什么还要写这篇博文呢，一方面是想基于Google官方教程和个人开发中的经验总结一份准确精炼的教程，另一方面也是作为一个知识备份。
+那么，通过本文你可以学到以下这些：
+1.Android界面开发中的那些名词的概念2.如何和一名不懂Android的UI设计师合作3.Android如何进行资源匹配
+对应以下三块内容：
+名词解释">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android屏幕适配与资源匹配">
+<meta property="og:url" content="http://guojinyu.github.io/2016/12/19/Android屏幕适配与资源匹配/index.html">
+<meta property="og:site_name" content="郭晋宇的技术博客">
+<meta property="og:description" content="Android屏幕适配是个头疼的问题，同时关于这方面的讲解也是烂大街了，那么为什么还要写这篇博文呢，一方面是想基于Google官方教程和个人开发中的经验总结一份准确精炼的教程，另一方面也是作为一个知识备份。
+那么，通过本文你可以学到以下这些：
+1.Android界面开发中的那些名词的概念2.如何和一名不懂Android的UI设计师合作3.Android如何进行资源匹配
+对应以下三块内容：
+名词解释">
+<meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/res-selection-flowchart%20%281%29.png">
+<meta property="og:updated_time" content="2017-02-21T08:42:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android屏幕适配与资源匹配">
+<meta name="twitter:description" content="Android屏幕适配是个头疼的问题，同时关于这方面的讲解也是烂大街了，那么为什么还要写这篇博文呢，一方面是想基于Google官方教程和个人开发中的经验总结一份准确精炼的教程，另一方面也是作为一个知识备份。
+那么，通过本文你可以学到以下这些：
+1.Android界面开发中的那些名词的概念2.如何和一名不懂Android的UI设计师合作3.Android如何进行资源匹配
+对应以下三块内容：
+名词解释">
+<meta name="twitter:image" content="http://obc3atr48.bkt.clouddn.com/res-selection-flowchart%20%281%29.png">
+  
+    <link rel="alternative" href="/atom.xml" title="郭晋宇的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/images/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-61761428-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/images/avatar.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">郭晋宇</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Android&amp;金融支付</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">博文</a></li>
+	        
+				<li><a href="/douban">读书</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">郭晋宇</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/images/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">郭晋宇</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Android&amp;金融支付</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">博文</a></li>
+		        
+					<li><a href="/douban">读书</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Android屏幕适配与资源匹配" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android屏幕适配与资源匹配
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android屏幕适配是个头疼的问题，同时关于这方面的讲解也是烂大街了，那么为什么还要写这篇博文呢，一方面是想基于Google官方教程和个人开发中的经验总结一份准确精炼的教程，另一方面也是作为一个知识备份。</p>
+<p>那么，通过本文你可以学到以下这些：</p>
+<p>1.Android界面开发中的那些名词的概念<br>2.如何和一名不懂Android的UI设计师合作<br>3.Android如何进行资源匹配</p>
+<p>对应以下三块内容：</p>
+<h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p><strong>px</strong><br>px(pixel)即像素，没什么好说的，所有电子图形设备能够显示的最小粒度的单位，和尺寸什么的无关，一般设备每一个像素点都是一个正方形。我们常说的1080p或者2k屏就是指的像素。</p>
+<p><strong>inch</strong><br>inch即英寸，没啥好说的，一般我们所说的几寸屏就是指的屏幕对角线是几英寸。Android曾经将屏幕尺寸组概括为四种：small、normal、large和xlarge，但是自Android 3.2(API=13)开始，这套尺寸组已弃用，而采用根据可用屏幕宽度管理屏幕尺寸的新技术。</p>
+<p><strong>dpi</strong><br>dpi(dots per inch)即每英寸的像素点的个数，这个值可以表示屏幕密度。Android目前把所有的屏幕密度归纳为六种通用dpi：</p>
+<blockquote>
+<p>ldpi ～120dpi<br>mdpi ～160dpi (baseline)<br>hdpi ～240dpi<br>xhdpi ～320dpi<br>xxhdpi ～480dpi<br>xxxhdpi ～640dpi  </p>
+</blockquote>
+<p>需要说明的是，上面的每种规格都只是圈定了一个范围，近似于后面的dpi数值，比如对于两台声明自己是hdpi屏幕密度的设备，其实际dpi值可能略有不同。此外，Android官方把mdpi定为基准(baseline)，这个基准有什么用呢，后面就可以看到了。</p>
+<p><strong>density</strong><br>density是真正意义上的屏幕密度，<strong><em>density=dpi/160</em></strong>，160是什么呢？正是我们上面说的基准mdpi的dpi值。在开发中可以由以下代码得到：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getResources().getDisplayMetrics().density;</div></pre></td></tr></table></figure></p>
+<p><strong>dp</strong><br>dp或dip(device independent pixels)即设备独立像素，Android特有的尺寸度量单位，设计的目的就是让其值在不同屏幕密度下能保持统一。在基准密度mdpi下，1dp=1px，因此dp和px的换算关系为<strong><em>dp=px/density=px/(dpi/160)</em></strong></p>
+<p><strong>sp</strong><br>sp(scaled pixels),可以大致翻译为比例像素，专门用于设置文字大小，其实其他和dp一样，唯一的不同就是会随着设备字体大小的设置项的改变而变化。</p>
+<h2 id="如何根据UI标注的px来开发"><a href="#如何根据UI标注的px来开发" class="headerlink" title="如何根据UI标注的px来开发"></a>如何根据UI标注的px来开发</h2><p>专业的UI设计师可能会给Android开发人员按照dp值来进行标注，并分几种不同的屏幕密度如hdpi、xhdpi来准备两套以上切图。但是很多“iOS系”的设计师会直接按照iPhone的模版来出图，并且按照iOS惯用的px来标注，然后发给一脸懵逼的我们。这个时候我们要去知道UI设计所采用的界面分辨率(720p?1080p?)是多少，当然最好也要知道目标设备屏幕尺寸是多少，比如同样是1080p，手机和平板的屏幕尺寸可是要差很大的。总而言之，我们是要确定依照哪种屏幕密度(hdpi?xhdpi?)来处理这套标注与切图。靠什么呢，靠下面这个主流机型屏幕尺寸表来映射吧(即使不知道具体的目标屏幕尺寸也没关系，只要知道你做的是手机还是平板应用就行了，然后基本上按照屏幕分辨率来选择吧)。</p>
+<blockquote>
+<p>ldpi density=0.75  2.7”:240x320,3.3”:240x400,3.4”:240x432<br>mdpi density=1  3.2”:320x480,5.1”:480x800,5.4”:480x854   (Tablet)7.0”:1024x600,10.1”:1280x800<br>hdpi density=1.5  3.7”:480x800,3.7”:480x854,4.0”:480x800<br>xhdpi density=2  4.65”:720x1280,4.7”:720x1280,4.7”:768x1280  (Tablet)7.0”:1200x1920,8.9”:2048x1536,10.1”:2560x1600<br>xxhdpi density=3  5.0”:1080x1920<br>560dpi  5.7”:1400*2560  </p>
+</blockquote>
+<p>一般UI设计师在设计手机APP时，除了按照iPhone的尺寸来出图，可能比较常用的是720x1280或者1080x1920这两个分辨率，那么若是720x1280px，我们就可以直接按照xhdpi来将标注图上的px值转化为dp，dp=px/density=px/2，然后所有对应的切图也就不用犹豫，直接丢入到drawable-xhdpi里即可；同理，若是1080x1920px，按照xxhdpi来处理，等等。需要说明的是，很多网上的教程在屏幕适配方面建议每个尺寸的资源文件夹都放入一套资源文件，或者建议只准备一套hdpi的资源文件。这都不是很合理的，前者的话可能对于一些比较特殊或者重要的素材需要这样处理，否则的话这会大大增加apk文件的体积，因此对于要求不是特别高的情况，只准备一至两套即可，Android系统在显示图片的时候会根据自身dpi和素材所在drawable文件夹的dpi来自动进行放大或缩小；后者的话已经过时了，时代在进步，社会在发展，现在市场上的主流机型是大屏手机了，目前应该是xhdpi和xxhdpi为主流，因此在设计和准备图片资源的时候最好围绕这二者来做，当然，仅限于当下。</p>
+<h2 id="Android如何进行最佳资源匹配"><a href="#Android如何进行最佳资源匹配" class="headerlink" title="Android如何进行最佳资源匹配"></a>Android如何进行最佳资源匹配</h2><p>在运行时，Android会检测当前设备配置并为应用加载合适的资源。那么Android如何去寻找它所认为的最合适的资源呢？假设有很多drawable目录分别包含相同图片资源的不同版本，那么参照以下流程图，匹配的过程如下：</p>
+<center><br><img src="http://obc3atr48.bkt.clouddn.com/res-selection-flowchart%20%281%29.png" alt="Android资源匹配流程图"><br></center>
+
+<p>1.<strong>淘汰与设备配置冲突的资源文件</strong><br>何谓与设备配置冲突的资源文件，这就不得不提到资源限定符了，比如我们默认生成的资源文件夹drawable-hdpi/中的hdpi就是一种限定符，实际上，限定符克不止屏幕像素密度这一种类型而是有很多，比如语言，屏幕方向，夜间模式，文本输入法，API级别等等十多种，如果要使用这些限定符则必须按照官方定义的规则去排序，比如drawable-en-port-xhdpi-12key/，顺序错误的话该资源文件夹会被忽略。理解了资源限定符这个概念，那么这一步就好理解了，那就是Android系统会根据当前设备的一系列配置去淘汰掉存在不匹配的资源限定符的文件夹，如语言不匹配或屏幕方向不匹配等等，但是要注意，屏幕像素密度是唯一一个不会因冲突而被淘汰的限定符。比如尽管设备的屏幕密度为hdpi，但是drawable-port-ldpi/不会被淘汰，因为此时每个屏幕密度均视为匹配。  </p>
+<p>2.<strong>双重循环(第一层遍历资源限定符，第二层遍历资源文件夹)</strong><br>按照限定符的优先级顺序选取下一个限定符，然后查找是否有资源目录包含此限定符，都没有的话换下一个限定符，如果有的话淘汰掉不含该限定符的资源文件夹，在剩余的资源文件夹里再匹配下一个限定符。可想而知，一般情况下，通过这样一个双重循环匹配，最终会只剩一个资源目录，便是最合适的资源。不一般的情况往下看。  </p>
+<p>3.<strong>特殊情况</strong><br>在步骤2中有一个例外，如果资源限定符的遍历走到了屏幕像素密度这一步，又没有完全匹配的资源文件夹，则Android会按比例缩小更高密度的资源或者放大更低密度的资源，比例系数为期望的dpi标准与实际的dpi标准的比值。就目前查找到的资料显示，通常，Android会选择一个能达到最佳效果的资源文件，因此它倾向于缩小大型原始图像，而不是放大小型原始图像。例如，设备是ldpi属性，但目前可用的资源文件有mdpi和hdpi版本，系统会优先选择缩小hdpi版本，因为系统可轻松以0.5为系数将hdpi资源缩小至ldpi资源，与以0.75为系数缩小mdpi中密度资源相比，伪影更少。此外，还有一点需要说明的是，系统会将drawable/ 中的资源作为“默认”资源，也就是指未标记配置限定符的资源，系统假设默认资源设计用于基线屏幕尺寸和密度，即mpdi，并在没有更合适的资源文件夹的情况下选择该文件夹中的资源，因此你的图片资源文件最好不要放置在该文件夹里，而是要放置在指定dpi的文件夹里。</p>
+<p>Ref:<br>1.<a href="https://developer.android.com/guide/practices/screens_support.html" target="_blank" rel="external">支持多种屏幕</a><br>2.<a href="https://developer.android.com/guide/topics/resources/providing-resources.html" target="_blank" rel="external">提供资源</a></p>
+<p>另，转载请注明出处！文中若有什么错误希望大家探讨指正！</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/19/Android屏幕适配与资源匹配/" class="archive-article-date">
+  	<time datetime="2016-12-19T07:42:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-19</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/技术/">技术</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2016/12/07/Android二维码扫描的简单实现及源码分析/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android二维码扫描的简单实现及源码分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android屏幕适配与资源匹配" data-title="Android屏幕适配与资源匹配" data-url="http://guojinyu.github.io/2016/12/19/Android屏幕适配与资源匹配/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"acker"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 郭晋宇
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/业务/" style="font-size: 10px;">业务</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://yikun.github.io/">Yikun</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">帝都小码农，完美主义者</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

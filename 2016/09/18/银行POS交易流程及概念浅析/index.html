@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>银行POS交易流程及概念浅析 | 郭晋宇的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="银行的交易体系是一套比较复杂的系统，本文将就POS机交易涉及到的一些概念、流程等作简要介绍。
+名词解释首先，解释一下我们在日常生活或者POS等支付系统开发时经常遇到的一些名词的基本概念。
+
+1.签到签到基本上是所有POS机必须支持的一项功能，并且POS机应该在每天的使用之前进行签到操作，其目的有两个：一是保证操作员及POS机的合法性（一般签到需要输入操作员号和对应的密码，也有自动签到的模式不需要手">
+<meta property="og:type" content="article">
+<meta property="og:title" content="银行POS交易流程及概念浅析">
+<meta property="og:url" content="http://guojinyu.github.io/2016/09/18/银行POS交易流程及概念浅析/index.html">
+<meta property="og:site_name" content="郭晋宇的技术博客">
+<meta property="og:description" content="银行的交易体系是一套比较复杂的系统，本文将就POS机交易涉及到的一些概念、流程等作简要介绍。
+名词解释首先，解释一下我们在日常生活或者POS等支付系统开发时经常遇到的一些名词的基本概念。
+
+1.签到签到基本上是所有POS机必须支持的一项功能，并且POS机应该在每天的使用之前进行签到操作，其目的有两个：一是保证操作员及POS机的合法性（一般签到需要输入操作员号和对应的密码，也有自动签到的模式不需要手">
+<meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/pos%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
+<meta property="og:updated_time" content="2017-02-21T08:42:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="银行POS交易流程及概念浅析">
+<meta name="twitter:description" content="银行的交易体系是一套比较复杂的系统，本文将就POS机交易涉及到的一些概念、流程等作简要介绍。
+名词解释首先，解释一下我们在日常生活或者POS等支付系统开发时经常遇到的一些名词的基本概念。
+
+1.签到签到基本上是所有POS机必须支持的一项功能，并且POS机应该在每天的使用之前进行签到操作，其目的有两个：一是保证操作员及POS机的合法性（一般签到需要输入操作员号和对应的密码，也有自动签到的模式不需要手">
+<meta name="twitter:image" content="http://obc3atr48.bkt.clouddn.com/pos%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
+  
+    <link rel="alternative" href="/atom.xml" title="郭晋宇的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/images/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-61761428-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/images/avatar.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">郭晋宇</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Android&amp;金融支付</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">博文</a></li>
+	        
+				<li><a href="/douban">读书</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">郭晋宇</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/images/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">郭晋宇</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Android&amp;金融支付</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">博文</a></li>
+		        
+					<li><a href="/douban">读书</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-银行POS交易流程及概念浅析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      银行POS交易流程及概念浅析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>银行的交易体系是一套比较复杂的系统，本文将就POS机交易涉及到的一些概念、流程等作简要介绍。</p>
+<h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>首先，解释一下我们在日常生活或者POS等支付系统开发时经常遇到的一些名词的基本概念。</p>
+<ul>
+<li><p>1.签到<br>签到基本上是所有POS机必须支持的一项功能，并且POS机应该在每天的使用之前进行签到操作，其目的有两个：一是保证操作员及POS机的合法性（一般签到需要输入操作员号和对应的密码，也有自动签到的模式不需要手动输入这些信息）；二是下载新的工作密钥。那么什么是工作密钥呢？</p>
+</li>
+<li><p>2.工作密钥<br>工作密钥是专门用来在交易过程中对刷卡人的卡密码进行加密的，它是在签到的时候从后台获取的，那么为了保证工作密钥的安全性，在网络传输中POS机得到的工作密钥是密文的形式，获得后需要用POS机的主密钥来解密获得真实的工作密钥明文。那么主密钥又是怎么来的呢？</p>
+</li>
+<li><p>3.主密钥<br>主密钥可以通过安全环境下手工输入或者由密钥母POS灌入等方式来存入到POS机，主要作用便是对工作密钥和MAC密钥等进行解密。</p>
+</li>
+<li><p>4.MAC密钥<br>与工作密钥类似，MAC密钥也是签到时从后台获取，并且用主密钥解密，主要作用是计算MAC（数据包校验值），该校验值附加在交易报文里进行传输，收端同样计算一个MAC值，通过比较两个MAC值来确定报文是否被篡改。</p>
+</li>
+<li><p>5.消费<br>消费即刷卡消费，不解释</p>
+</li>
+<li><p>6.消费撤销<br>故名思意，即因为某种原因已经进行过消费的一笔交易，请求撤销。需要注意的是，消费撤销必须是撤销消费所用POS机的当日当批次的消费交易。</p>
+</li>
+<li><p>7.退货<br>和消费撤销类似，退货也是对一笔消费交易进行退款，不同的是，一，退货不要求当日当批次的消费；二，退货一般支持部分退货，多次退货，而消费撤销一般都是直接退全款。想要理解消费撤销和退货的本质区别，那么必须首先知道什么是结算。</p>
+</li>
+<li><p>8.结算<br>一般POS机在每天的工作结束之后，应进行结算操作（分为手动结算和自动结算），结算会将当日POS机中存储的所有笔交易（包含消费、消费撤销）上传至后台并清空，然后进行签退。一个结算周期内所有的交易使用的是同一个批次号，即同一批次。因此可以简单的理解为结算之前只能消费撤销，因为消费数据在POS机里面存着；结算之后只能退货，此时原消费数据已从POS机里面清除。</p>
+</li>
+<li><p>9.冲正<br>当POS机终端将一笔交易的报文发往后台，但是没有收到返回最终超时时，POS机无法确定后台是否成功的完成了这笔交易。因此，当下笔交易发生前，POS机会先向后台请求撤销该笔不确定的交易，如果后台记录该笔交易成功，则回滚及撤销该笔交易，否则不处理，此为冲正成功；如果POS机与银联结算中间在数据传输过程中发生故障，则冲正不成功，此时刷卡方卡里的钱已经被扣，需要进行人工冲正。</p>
+</li>
+<li><p>10.补登<br>补登指支付应用将交易结果发送给POS机后并没有收到POS机的应答，因此不确定POS机端是否成功记录了该笔交易，此时支付应用应进行的自动或手动的POS端交易查询。</p>
+</li>
+<li><p>11.预授权相关<br>包含预授权，预授权追加，预授权完成，预授权撤销，预授权撤销完成。预授权类似于押金，即先冻结一部分用户银行卡的资金，等消费正式完成之后再扣取实际的金额即预授权完成。不难想象，预授权业务多用于酒店。</p>
+</li>
+</ul>
+<p>此外，<a href="https://www.zhihu.com/question/29519161/answer/45062087#" target="_blank" rel="external">POS机签购单上对应的一些字段术语</a>，如下所示：</p>
+<blockquote>
+<p>批次号(Batch NO.)：POS从签到起至结算、签退为止的交易为一批次，交易批次号标识一批交易。POS中心为每个POS的每个批次分配一个批次号，在签到响应报文中下传给POS终端。对应银联ISO8583报文的报文头域7：批次号(Batch Number) </p>
+<p>序号(Ref. NO.)：POS中心为交易分配的流水号，在响应报文中下传给POS终端作为对账参考号，并用于事后查证。对应银联ISO8583报文的域37：检索参考号（Retrieval Reference Number）</p>
+<p>授权号(Auth Code)：授权标识应答码，简称“授权码”。是发卡行返回或银联CUPS代授权时返回的授权序号。对应银联ISO8583报文的域38：授权标识应答码 Authorization Identification Response</p>
+<p>查询号(Trace NO.)：POS机为每一笔交易产生的顺序编号。POS每上送一次交易此号码增加1。 POS流水号为6位数字，值从1至999999循环使用。在自动冲正时，POS中心依据POS流水号作为确定被冲正交易的要素之一。</p>
+<p>凭证号(Voucher NO.)：查询号(Trace NO. 也叫POS流水号)也作为交易凭证号（在签购单上打印为Voucher NO.），在进行撤销等交易时，输入原交易凭证号作为确定原交易的要素之一，并且必须上送原交易的凭证号。</p>
+</blockquote>
+<h2 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h2><p>下图所示为一般的包含POS支付APP，POS终端，后台的交易流程示意图，所有的交易类型如消费、消费撤销、退货等都是这样一套流程。图中JAR是JAVA语言单独封装出来的一层，相当于APP、POS终端、后台服务器三者的媒介。当然，其他语言原理一样。</p>
+<p><center><br><img src="http://obc3atr48.bkt.clouddn.com/pos%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="POS交易流程图"><br></center><br>参考上图，具体步骤为：</p>
+<ol>
+<li>APP通过用户界面发起一项交易（消费、消费撤销、退货等）；</li>
+<li>JAR包收到交易指令后通知POS终端（二者通过串口或蓝牙进行通讯），显示交易指令并提示刷卡；</li>
+<li>持卡人刷卡输入密码确认后，POS终端将交易请求数据打包发送给JAR包；</li>
+<li>JAR包将交易请求数据通过互联网发送给后台；</li>
+<li>后台处理完毕后将处理结果返回给JAR包；</li>
+<li>JAR包将这一结果再次透传返回给POS终端，这一步POS终端如果接收超时，则下次交易发起时会进行自动冲正；</li>
+<li>POS机记录交易结果，并向JAR包应答，这一步JAR包如果接收超时，则需提示APP进行补登操作；</li>
+<li>JAR包将交易结果最终返回给APP。</li>
+</ol>
+<p>另外，文中所出现的后台指的是收单机构的后台，收单机构又是和银联的后台对接的，那么这里需要详细解释一下。这个时候我们需要引入<strong>清算</strong>这个概念以及著名的<strong>721</strong>比例。</p>
+<p>在一次普通的POS机交易中，可能涉及到四家机构，一是刷卡人的发卡行，二是为POS机拓展商户的收单机构（当然，POS机可能又是另外一家专门的POS机厂商生产的），三是商户账户对应的银行，四是银联。银联的清算中心作为一个桥梁，每天会对所有收单机构的交易进行清算，清算前，顾客刷卡消费的金额虽然已经从其银行卡上扣掉了，但实际上还是在该银行内部，通过银联的清算，这笔金额会通过银联到达收单机构的账户，收单机构又会再次通过银联将这笔钱转到商户所使用的银行账户上。上述的过程钱不是白转的，一般POS刷卡消费对于商户会有一定比例的手续费，如千分之六，那么这个手续费会按照<strong>持卡人发卡行：收单机构：银联=7：2：1</strong>的比例来进行分成。当然需要注意的是，收单机构既包括一些银行，也包括一些有收单支付牌照的第三方机构，当收单机构和持卡人的银行卡同属一家银行的时候，是不需要经过银联的，因此该银行可以通吃商户手续费。</p>
+<p>需要说明的是，银行交易系统流程复杂，POS机应用模式也是多种多样，因此本文所讲内容可能只是冰山一角，不准确的地方还望大家批评指正。</p>
+<p>转载请注明出处！</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/09/18/银行POS交易流程及概念浅析/" class="archive-article-date">
+  	<time datetime="2016-09-18T10:58:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-09-18</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/业务/">业务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/技术/">技术</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/12/07/Android二维码扫描的简单实现及源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Android二维码扫描的简单实现及源码分析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/03/Android使用Builder模式自定义Dialog/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android使用Builder模式自定义Dialog</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="银行POS交易流程及概念浅析" data-title="银行POS交易流程及概念浅析" data-url="http://guojinyu.github.io/2016/09/18/银行POS交易流程及概念浅析/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"acker"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 郭晋宇
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/业务/" style="font-size: 10px;">业务</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://yikun.github.io/">Yikun</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">帝都小码农，完美主义者</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

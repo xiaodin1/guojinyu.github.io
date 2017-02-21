@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Android二维码扫描的简单实现及源码分析 | 郭晋宇的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。
+条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android二维码扫描的简单实现及源码分析">
+<meta property="og:url" content="http://guojinyu.github.io/2016/12/07/Android二维码扫描的简单实现及源码分析/index.html">
+<meta property="og:site_name" content="郭晋宇的技术博客">
+<meta property="og:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。
+条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
+<meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/new%20image%20-%20vtj52.jpg">
+<meta property="og:updated_time" content="2017-02-21T08:42:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android二维码扫描的简单实现及源码分析">
+<meta name="twitter:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。
+条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
+<meta name="twitter:image" content="http://obc3atr48.bkt.clouddn.com/new%20image%20-%20vtj52.jpg">
+  
+    <link rel="alternative" href="/atom.xml" title="郭晋宇的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/images/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-61761428-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/images/avatar.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">郭晋宇</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Android&amp;金融支付</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">博文</a></li>
+	        
+				<li><a href="/douban">读书</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">郭晋宇</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/images/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">郭晋宇</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Android&amp;金融支付</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">博文</a></li>
+		        
+					<li><a href="/douban">读书</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Android二维码扫描的简单实现及源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android二维码扫描的简单实现及源码分析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。</p>
+<h2 id="条码扫描功能的快速集成"><a href="#条码扫描功能的快速集成" class="headerlink" title="条码扫描功能的快速集成"></a>条码扫描功能的快速集成</h2><p>默认你使用了Android Stuidio进行开发，直接使用这个开源项目<a href="https://github.com/GuoJinyu/SimpleZXing" target="_blank" rel="external">SimpleZXing</a>,它是在ZXing库的作者为Android写的条码扫描APP Barcode Scanner的基础上精简和修改而成的。<br>你可以通过简单的两步就可以实现条码扫描的功能。</p>
+<ul>
+<li>1.添加项目依赖  </li>
+</ul>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">compile</span> <span class="string">'com.acker:simplezxing:1.2'</span></div></pre></td></tr></table></figure>
+<ul>
+<li>2.在你想调起条码扫描界面的地方(比如YourActivity)，调起二维码扫描界面CaptureActivity  </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">startActivityForResult(<span class="keyword">new</span> Intent(YourActivity.<span class="keyword">this</span>, CaptureActivity.class), CaptureActivity.REQ_CODE)</div></pre></td></tr></table></figure>
+<p>然后就会打开如下这个界面：</p>
+<p><center><br><img src="http://obc3atr48.bkt.clouddn.com/new%20image%20-%20vtj52.jpg" alt="条码扫描界面"><br></center><br>将条码置于框内，扫描成功后会将解码得到的字符串返回给调起者，所以你只需要在你的Activity的onActivityResult()方法里拿到它进行后续操作即可。</p>
+<p>当然SimpleZXing目前还支持一些设置项，包括摄像头是否开启曝光，扫码成功后是否震动，是否发声，闪光灯模式自动、常开、常关，屏幕自动旋转、横屏、竖屏。</p>
+<p>同时，虽然该项目已经在manifest里申明了所需的照相机权限，但是在Android 6.0以上系统中你仍然需要自己处理动态权限管理。所以一个标准的使用方式如以下代码所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.acker.simplezxing.demo;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.Manifest;</div><div class="line"><span class="keyword">import</span> android.content.Intent;</div><div class="line"><span class="keyword">import</span> android.content.pm.PackageManager;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.support.annotation.NonNull;</div><div class="line"><span class="keyword">import</span> android.support.v4.app.ActivityCompat;</div><div class="line"><span class="keyword">import</span> android.support.v4.content.ContextCompat;</div><div class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</div><div class="line"><span class="keyword">import</span> android.view.View;</div><div class="line"><span class="keyword">import</span> android.widget.Button;</div><div class="line"><span class="keyword">import</span> android.widget.TextView;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.acker.simplezxing.activity.CaptureActivity;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> REQ_CODE_PERMISSION = <span class="number">0x1111</span>;</div><div class="line">    <span class="keyword">private</span> TextView tvResult;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        tvResult = (TextView) findViewById(R.id.tv_result);</div><div class="line">        Button btn = (Button) findViewById(R.id.btn_sm);</div><div class="line">        btn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                <span class="comment">// Open Scan Activity</span></div><div class="line">                <span class="keyword">if</span> (ContextCompat.checkSelfPermission(MainActivity.<span class="keyword">this</span>, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                    <span class="comment">// Do not have the permission of camera, request it.</span></div><div class="line">                    ActivityCompat.requestPermissions(MainActivity.<span class="keyword">this</span>, <span class="keyword">new</span> String[]&#123;Manifest.permission.CAMERA&#125;, REQ_CODE_PERMISSION);</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// Have gotten the permission</span></div><div class="line">                    startCaptureActivityForResult();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startCaptureActivityForResult</span><span class="params">()</span> </span>&#123;</div><div class="line">        Intent intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, CaptureActivity.class);</div><div class="line">        Bundle bundle = <span class="keyword">new</span> Bundle();</div><div class="line">        bundle.putBoolean(CaptureActivity.KEY_NEED_BEEP, CaptureActivity.VALUE_BEEP);</div><div class="line">        bundle.putBoolean(CaptureActivity.KEY_NEED_VIBRATION, CaptureActivity.VALUE_VIBRATION);</div><div class="line">        bundle.putBoolean(CaptureActivity.KEY_NEED_EXPOSURE, CaptureActivity.VALUE_NO_EXPOSURE);</div><div class="line">        bundle.putByte(CaptureActivity.KEY_FLASHLIGHT_MODE, CaptureActivity.VALUE_FLASHLIGHT_OFF);</div><div class="line">        bundle.putByte(CaptureActivity.KEY_ORIENTATION_MODE, CaptureActivity.VALUE_ORIENTATION_AUTO);</div><div class="line">        intent.putExtra(CaptureActivity.EXTRA_SETTING_BUNDLE, bundle);</div><div class="line">        startActivityForResult(intent, CaptureActivity.REQ_CODE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRequestPermissionsResult</span><span class="params">(<span class="keyword">int</span> requestCode, @NonNull String[] permissions, @NonNull <span class="keyword">int</span>[] grantResults)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">        <span class="keyword">switch</span> (requestCode) &#123;</div><div class="line">            <span class="keyword">case</span> REQ_CODE_PERMISSION: &#123;</div><div class="line">                <span class="keyword">if</span> (grantResults.length &gt; <span class="number">0</span> &amp;&amp; grantResults[<span class="number">0</span>] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                    <span class="comment">// User agree the permission</span></div><div class="line">                    startCaptureActivityForResult();</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// User disagree the permission</span></div><div class="line">                    Toast.makeText(<span class="keyword">this</span>, <span class="string">"You must agree the camera permission request before you use the code scan function"</span>, Toast.LENGTH_LONG).show();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);</div><div class="line">        <span class="keyword">switch</span> (requestCode) &#123;</div><div class="line">            <span class="keyword">case</span> CaptureActivity.REQ_CODE:</div><div class="line">                <span class="keyword">switch</span> (resultCode) &#123;</div><div class="line">                    <span class="keyword">case</span> RESULT_OK:</div><div class="line">                        tvResult.setText(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));  <span class="comment">//or do sth</span></div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    <span class="keyword">case</span> RESULT_CANCELED:</div><div class="line">                        <span class="keyword">if</span> (data != <span class="keyword">null</span>) &#123;</div><div class="line">                            <span class="comment">// for some reason camera is not working correctly</span></div><div class="line">                            tvResult.setText(data.getStringExtra(CaptureActivity.EXTRA_SCAN_RESULT));</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上说了如何通过使用SimpleZXing开源项目来快速实现条码扫描功能，当然开发者可能会因为一些特定的需求需要修改某些地方的代码，如UI等等，那么下面我会带大家大致讲解一下这个开源项目的代码，使大家更进一步了解条码扫描的实现机制，同时方便大家在它基础之上进行修改。</p>
+<h2 id="SimpleZXing关键代码分析"><a href="#SimpleZXing关键代码分析" class="headerlink" title="SimpleZXing关键代码分析"></a>SimpleZXing关键代码分析</h2><p>其实条码扫描的过程很容易理解，就是将摄像头捕捉到的预览帧数组进行处理，发现其中的一维码或二维码并进行解码。但是就是在摄像头捕捉数据的过程中有几个重要的地方需要大家注意。我们倒过来分析这个过程。</p>
+<h3 id="1-DecodeHandler-class中的decode-方法"><a href="#1-DecodeHandler-class中的decode-方法" class="headerlink" title="1.DecodeHandler.class中的decode()方法"></a>1.DecodeHandler.class中的decode()方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Decode the data within the viewfinder rectangle, and time how long it took. For efficiency,</div><div class="line"> * reuse the same reader objects from one decode to the next.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> data   The YUV preview frame.</div><div class="line"> * <span class="doctag">@param</span> width  The width of the preview frame.</div><div class="line"> * <span class="doctag">@param</span> height The height of the preview frame.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">decode</span><span class="params">(<span class="keyword">byte</span>[] data, <span class="keyword">int</span> width, <span class="keyword">int</span> height)</span> </span>&#123;</div><div class="line">    <span class="keyword">long</span> start = System.currentTimeMillis();</div><div class="line">    <span class="keyword">if</span> (width &lt; height) &#123;</div><div class="line">        <span class="comment">// portrait</span></div><div class="line">        <span class="keyword">byte</span>[] rotatedData = <span class="keyword">new</span> <span class="keyword">byte</span>[data.length];</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; width; x++) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; height; y++)</div><div class="line">                rotatedData[y * width + width - x - <span class="number">1</span>] = data[y + x * height];</div><div class="line">        &#125;</div><div class="line">        data = rotatedData;</div><div class="line">    &#125;</div><div class="line">    Result rawResult = <span class="keyword">null</span>;</div><div class="line">    PlanarYUVLuminanceSource source = activity.getCameraManager().buildLuminanceSource(data, width, height);</div><div class="line">    <span class="keyword">if</span> (source != <span class="keyword">null</span>) &#123;</div><div class="line">        BinaryBitmap bitmap = <span class="keyword">new</span> BinaryBitmap(<span class="keyword">new</span> HybridBinarizer(source));</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            rawResult = multiFormatReader.decodeWithState(bitmap);</div><div class="line">        &#125; <span class="keyword">catch</span> (ReaderException re) &#123;</div><div class="line">            <span class="comment">// continue</span></div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            multiFormatReader.reset();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    Handler handler = activity.getHandler();</div><div class="line">    <span class="keyword">if</span> (rawResult != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// Don't log the barcode contents for security.</span></div><div class="line">        <span class="keyword">long</span> end = System.currentTimeMillis();</div><div class="line">        Log.d(TAG, <span class="string">"Found barcode in "</span> + (end - start) + <span class="string">" ms"</span>);</div><div class="line">        <span class="keyword">if</span> (handler != <span class="keyword">null</span>) &#123;</div><div class="line">            Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);</div><div class="line">            message.sendToTarget();</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">if</span> (handler != <span class="keyword">null</span>) &#123;</div><div class="line">            Message message = Message.obtain(handler, R.id.decode_failed);</div><div class="line">            message.sendToTarget();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>显然，这个时候处理解码的线程对应的Handler已经拿到了预览帧的byte数组以及预览帧的高和宽。在这个方法中，我们首先根据此时屏幕是横屏还是竖屏对预览帧数组进行了一个预处理。</p>
+<p>因为在Android设备上，存在以下<a href="https://gold.xitu.io/entry/56aa36fad342d300542e7510" target="_blank" rel="external">几个概念</a>：</p>
+<blockquote>
+<p>屏幕方向：在Android系统中，屏幕的左上角是坐标系统的原点（0,0）坐标。原点向右延伸是X轴正方向，原点向下延伸是Y轴正方向。</p>
+<p>相机传感器方向：手机相机的图像数据都是来自于摄像头硬件的图像传感器，这个传感器在被固定到手机上后有一个默认的取景方向，坐标原点位于手机横放时的左上角，即与横屏应用的屏幕X方向一致。换句话说，与竖屏应用的屏幕X方向呈90度角。</p>
+<p>相机的预览方向：由于手机屏幕可以360度旋转，为了保证用户无论怎么旋转手机都能看到“正确”的预览画面（这个“正确”是指显示在UI预览界面的画面与人眼看到的眼前的画面是一致的），Android系统底层根据当前手机屏幕的方向对图像传感器采集到的数据进行了旋转处理，然后才送给显示系统，因此可以保证预览画面始终“正确”。在相机API中可以通过setDisplayOrientation()设置相机预览方向。在默认情况下，这个值为0，与图像传感器一致。因此对于横屏应用来说，由于屏幕方向和预览方向一致，预览图像不会颠倒90度。但是对于竖屏应用，屏幕方向和预览方向垂直，所以会出现颠倒90度现象。为了得到正确的预览画面，必须通过API将相机的预览方向旋转90，保持与屏幕方向一致，如图3所示。</p>
+</blockquote>
+<p>也就是说，相机得到的图像数据始终是一个横屏的姿态，当手机处于竖屏时，即使我们通过设置在屏幕上看到的拍摄画面是准确的，没有90度翻转的，我们通过API得到的图像数据仍然是基于横屏的，因此在判断到width &lt; height即屏幕处于竖屏状态时，我们首先对byte数组进行一个手动90度旋转，然后将结果构造为一个PlanarYUVLuminanceSource对象，进行真正的解析处理去了，这里我们就不管了。</p>
+<p>然后再看这个预览帧数据是怎么来的。</p>
+<h3 id="2-PreviewCallback-class中的onPreviewFrame-方法"><a href="#2-PreviewCallback-class中的onPreviewFrame-方法" class="headerlink" title="2.PreviewCallback.class中的onPreviewFrame()方法"></a>2.PreviewCallback.class中的onPreviewFrame()方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPreviewFrame</span><span class="params">(<span class="keyword">byte</span>[] data, Camera camera)</span> </span>&#123;</div><div class="line">    Point cameraResolution = configManager.getCameraResolution();</div><div class="line">    Handler thePreviewHandler = previewHandler;</div><div class="line">    <span class="keyword">if</span> (cameraResolution != <span class="keyword">null</span> &amp;&amp; thePreviewHandler != <span class="keyword">null</span>) &#123;</div><div class="line">        Message message;</div><div class="line">        Point screenResolution = configManager.getScreenResolution();</div><div class="line">        <span class="keyword">if</span> (screenResolution.x &lt; screenResolution.y)&#123;</div><div class="line">            <span class="comment">// portrait</span></div><div class="line">            message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.y,</div><div class="line">                    cameraResolution.x, data);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// landscape</span></div><div class="line">            message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.x,</div><div class="line">                    cameraResolution.y, data);</div><div class="line">        &#125;</div><div class="line">        message.sendToTarget();</div><div class="line">        previewHandler = <span class="keyword">null</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        Log.d(TAG, <span class="string">"Got preview callback, but no handler or resolution available"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个容易理解，就是系统Camera.PreviewCallback接口，并实现了回调方法，每次获取到预览帧时将图像数据进行回调，同样区分了横竖屏的情况以方便上文decode时的预处理。这里出现了cameraResolution和screenResolution两个对象，我们接下来看看它们分别是什么。</p>
+<h3 id="3-CameraConfigurationManager-class中的initFromCameraParameters-方法"><a href="#3-CameraConfigurationManager-class中的initFromCameraParameters-方法" class="headerlink" title="3.CameraConfigurationManager.class中的initFromCameraParameters()方法"></a>3.CameraConfigurationManager.class中的initFromCameraParameters()方法</h3><p>我们可以看到，上面提到的cameraResolution和screenResolution是在CameraConfigurationManager.class中的initFromCameraParameters()方法中得到的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Reads, one time, values from the camera that are needed by the app.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">initFromCameraParameters</span><span class="params">(OpenCamera camera)</span> </span>&#123;</div><div class="line">    Camera.Parameters parameters = camera.getCamera().getParameters();</div><div class="line">    WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);</div><div class="line">    Display display = manager.getDefaultDisplay();</div><div class="line">    <span class="keyword">int</span> displayRotation = display.getRotation();</div><div class="line">    <span class="keyword">int</span> cwRotationFromNaturalToDisplay;</div><div class="line">    <span class="keyword">switch</span> (displayRotation) &#123;</div><div class="line">        <span class="keyword">case</span> Surface.ROTATION_0:</div><div class="line">            cwRotationFromNaturalToDisplay = <span class="number">0</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Surface.ROTATION_90:</div><div class="line">            cwRotationFromNaturalToDisplay = <span class="number">90</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Surface.ROTATION_180:</div><div class="line">            cwRotationFromNaturalToDisplay = <span class="number">180</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Surface.ROTATION_270:</div><div class="line">            cwRotationFromNaturalToDisplay = <span class="number">270</span>;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="comment">// Have seen this return incorrect values like -90</span></div><div class="line">            <span class="keyword">if</span> (displayRotation % <span class="number">90</span> == <span class="number">0</span>) &#123;</div><div class="line">                cwRotationFromNaturalToDisplay = (<span class="number">360</span> + displayRotation) % <span class="number">360</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Bad rotation: "</span> + displayRotation);</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">    Log.i(TAG, <span class="string">"Display at: "</span> + cwRotationFromNaturalToDisplay);</div><div class="line"></div><div class="line">    <span class="keyword">int</span> cwRotationFromNaturalToCamera = camera.getOrientation();</div><div class="line">    Log.i(TAG, <span class="string">"Camera at: "</span> + cwRotationFromNaturalToCamera);</div><div class="line"></div><div class="line">    <span class="comment">// Still not 100% sure about this. But acts like we need to flip this:</span></div><div class="line">    <span class="keyword">if</span> (camera.getFacing() == CameraFacing.FRONT) &#123;</div><div class="line">        cwRotationFromNaturalToCamera = (<span class="number">360</span> - cwRotationFromNaturalToCamera) % <span class="number">360</span>;</div><div class="line">        Log.i(TAG, <span class="string">"Front camera overriden to: "</span> + cwRotationFromNaturalToCamera);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    cwRotationFromDisplayToCamera =</div><div class="line">            (<span class="number">360</span> + cwRotationFromNaturalToCamera - cwRotationFromNaturalToDisplay) % <span class="number">360</span>;</div><div class="line">    Log.i(TAG, <span class="string">"Final display orientation: "</span> + cwRotationFromDisplayToCamera);</div><div class="line">    <span class="keyword">int</span> cwNeededRotation;</div><div class="line">    <span class="keyword">if</span> (camera.getFacing() == CameraFacing.FRONT) &#123;</div><div class="line">        Log.i(TAG, <span class="string">"Compensating rotation for front camera"</span>);</div><div class="line">        cwNeededRotation = (<span class="number">360</span> - cwRotationFromDisplayToCamera) % <span class="number">360</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        cwNeededRotation = cwRotationFromDisplayToCamera;</div><div class="line">    &#125;</div><div class="line">    Log.i(TAG, <span class="string">"Clockwise rotation from display to camera: "</span> + cwNeededRotation);</div><div class="line"></div><div class="line">    Point theScreenResolution = <span class="keyword">new</span> Point();</div><div class="line">    display.getSize(theScreenResolution);</div><div class="line">    screenResolution = theScreenResolution;</div><div class="line">    Log.i(TAG, <span class="string">"Screen resolution in current orientation: "</span> + screenResolution);</div><div class="line">    cameraResolution = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolution);</div><div class="line">    Log.i(TAG, <span class="string">"Camera resolution: "</span> + cameraResolution);</div><div class="line">    bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolution);</div><div class="line">    Log.i(TAG, <span class="string">"Best available preview size: "</span> + bestPreviewSize);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个方法中前面的大段通过屏幕方向和摄像头成像方向来计算预览画面的旋转度数，从而保证预览得到的画面随着手机的旋转或者前后置摄像头的更换而保持正确的显示，当然，我们也可以看到screenResolution是通过Display类来获取到的Point对象。它的x，y值就分别代表当前屏幕的横向和纵向的像素值，当然这个是和屏幕方向有关系的。然后可以看到另外两个Point对象cameraResolution以及bestPreviewSize是通过CameraConfigurationUtils.class中的findBestPreviewSizeValue()方法得到的，那我们再来看这个方法。</p>
+<h3 id="4-CameraConfigurationUtils-class中的findBestPreviewSizeValue-方法"><a href="#4-CameraConfigurationUtils-class中的findBestPreviewSizeValue-方法" class="headerlink" title="4.CameraConfigurationUtils.class中的findBestPreviewSizeValue()方法"></a>4.CameraConfigurationUtils.class中的findBestPreviewSizeValue()方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> Point <span class="title">findBestPreviewSizeValue</span><span class="params">(Camera.Parameters parameters, Point screenResolution)</span> </span>&#123;</div><div class="line"></div><div class="line">    List&lt;Camera.Size&gt; rawSupportedSizes = parameters.getSupportedPreviewSizes();</div><div class="line">    <span class="keyword">if</span> (rawSupportedSizes == <span class="keyword">null</span>) &#123;</div><div class="line">        Log.w(TAG, <span class="string">"Device returned no supported preview sizes; using default"</span>);</div><div class="line">        Camera.Size defaultSize = parameters.getPreviewSize();</div><div class="line">        <span class="keyword">if</span> (defaultSize == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Parameters contained no preview size!"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Point(defaultSize.width, defaultSize.height);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Sort by size, descending</span></div><div class="line">    List&lt;Camera.Size&gt; supportedPreviewSizes = <span class="keyword">new</span> ArrayList&lt;&gt;(rawSupportedSizes);</div><div class="line">    Collections.sort(supportedPreviewSizes, <span class="keyword">new</span> Comparator&lt;Camera.Size&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Camera.Size a, Camera.Size b)</span> </span>&#123;</div><div class="line">            <span class="keyword">int</span> aPixels = a.height * a.width;</div><div class="line">            <span class="keyword">int</span> bPixels = b.height * b.width;</div><div class="line">            <span class="keyword">if</span> (bPixels &lt; aPixels) &#123;</div><div class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (bPixels &gt; aPixels) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (Log.isLoggable(TAG, Log.INFO)) &#123;</div><div class="line">        StringBuilder previewSizesString = <span class="keyword">new</span> StringBuilder();</div><div class="line">        <span class="keyword">for</span> (Camera.Size supportedPreviewSize : supportedPreviewSizes) &#123;</div><div class="line">            previewSizesString.append(supportedPreviewSize.width).append(<span class="string">'x'</span>)</div><div class="line">                    .append(supportedPreviewSize.height).append(<span class="string">' '</span>);</div><div class="line">        &#125;</div><div class="line">        Log.i(TAG, <span class="string">"Supported preview sizes: "</span> + previewSizesString);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">double</span> screenAspectRatio = screenResolution.x / (<span class="keyword">double</span>) screenResolution.y;</div><div class="line">    <span class="comment">// Remove sizes that are unsuitable</span></div><div class="line">    Iterator&lt;Camera.Size&gt; it = supportedPreviewSizes.iterator();</div><div class="line">    <span class="keyword">while</span> (it.hasNext()) &#123;</div><div class="line">        Camera.Size supportedPreviewSize = it.next();</div><div class="line">        <span class="keyword">int</span> realWidth = supportedPreviewSize.width;</div><div class="line">        <span class="keyword">int</span> realHeight = supportedPreviewSize.height;</div><div class="line">        <span class="keyword">if</span> (realWidth * realHeight &lt; MIN_PREVIEW_PIXELS) &#123;</div><div class="line">            it.remove();</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">boolean</span> isScreenPortrait = screenResolution.x &lt; screenResolution.y;</div><div class="line">        <span class="keyword">int</span> maybeFlippedWidth = isScreenPortrait ? realHeight : realWidth;</div><div class="line">        <span class="keyword">int</span> maybeFlippedHeight = isScreenPortrait ? realWidth : realHeight;</div><div class="line">        <span class="keyword">double</span> aspectRatio = (<span class="keyword">double</span>) maybeFlippedWidth / (<span class="keyword">double</span>) maybeFlippedHeight;</div><div class="line">        <span class="keyword">double</span> distortion = Math.abs(aspectRatio - screenAspectRatio);</div><div class="line">        <span class="keyword">if</span> (distortion &gt; MAX_ASPECT_DISTORTION) &#123;</div><div class="line">            it.remove();</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (maybeFlippedWidth == screenResolution.x &amp;&amp; maybeFlippedHeight == screenResolution.y) &#123;</div><div class="line">            Point exactPoint = <span class="keyword">new</span> Point(realWidth, realHeight);</div><div class="line">            Log.i(TAG, <span class="string">"Found preview size exactly matching screen size: "</span> + exactPoint);</div><div class="line">            <span class="keyword">return</span> exactPoint;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// If no exact match, use largest preview size. This was not a great idea on older devices because</span></div><div class="line">    <span class="comment">// of the additional computation needed. We're likely to get here on newer Android 4+ devices, where</span></div><div class="line">    <span class="comment">// the CPU is much more powerful.</span></div><div class="line">    <span class="keyword">if</span> (!supportedPreviewSizes.isEmpty()) &#123;</div><div class="line">        Camera.Size largestPreview = supportedPreviewSizes.get(<span class="number">0</span>);</div><div class="line">        Point largestSize = <span class="keyword">new</span> Point(largestPreview.width, largestPreview.height);</div><div class="line">        Log.i(TAG, <span class="string">"Using largest suitable preview size: "</span> + largestSize);</div><div class="line">        <span class="keyword">return</span> largestSize;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// If there is nothing at all suitable, return current preview size</span></div><div class="line">    Camera.Size defaultPreview = parameters.getPreviewSize();</div><div class="line">    <span class="keyword">if</span> (defaultPreview == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Parameters contained no preview size!"</span>);</div><div class="line">    &#125;</div><div class="line">    Point defaultSize = <span class="keyword">new</span> Point(defaultPreview.width, defaultPreview.height);</div><div class="line">    Log.i(TAG, <span class="string">"No suitable preview sizes, using default: "</span> + defaultSize);</div><div class="line">    <span class="keyword">return</span> defaultSize;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看出所谓bestPreviewSize就是将相机支持的预览分辨率都获取到然后找一个和屏幕分辨率最接近的最为最终的结果，当然，同样，要有横竖屏的处理。<br>那么上面步骤3获取到的这些Point对象等等还有什么用呢，其实它们都将作为相机预览及显示的参数设置给Camera对象，如以下这个方法：</p>
+<h3 id="5-CameraConfigurationManager-class中的setDesiredCameraParameters-方法"><a href="#5-CameraConfigurationManager-class中的setDesiredCameraParameters-方法" class="headerlink" title="5.CameraConfigurationManager.class中的setDesiredCameraParameters()方法"></a>5.CameraConfigurationManager.class中的setDesiredCameraParameters()方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setDesiredCameraParameters</span><span class="params">(OpenCamera camera, <span class="keyword">boolean</span> safeMode)</span> </span>&#123;</div><div class="line">    Camera theCamera = camera.getCamera();</div><div class="line">    Camera.Parameters parameters = theCamera.getParameters();</div><div class="line">    <span class="keyword">if</span> (parameters == <span class="keyword">null</span>) &#123;</div><div class="line">        Log.w(TAG, <span class="string">"Device error: no camera parameters are available. Proceeding without configuration."</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    Log.i(TAG, <span class="string">"Initial camera parameters: "</span> + parameters.flatten());</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (safeMode) &#123;</div><div class="line">        Log.w(TAG, <span class="string">"In camera config safe mode -- most settings will not be honored"</span>);</div><div class="line">    &#125;</div><div class="line">    initializeTorch(parameters, safeMode);</div><div class="line">    CameraConfigurationUtils.setFocus(</div><div class="line">            parameters,</div><div class="line">            <span class="keyword">true</span>,</div><div class="line">            <span class="keyword">true</span>,</div><div class="line">            safeMode);</div><div class="line">    <span class="keyword">if</span> (!safeMode) &#123;</div><div class="line">        CameraConfigurationUtils.setBarcodeSceneMode(parameters);</div><div class="line">        CameraConfigurationUtils.setVideoStabilization(parameters);</div><div class="line">        CameraConfigurationUtils.setFocusArea(parameters);</div><div class="line">        CameraConfigurationUtils.setMetering(parameters);</div><div class="line">    &#125;</div><div class="line">    parameters.setPreviewSize(bestPreviewSize.x, bestPreviewSize.y);</div><div class="line">    theCamera.setParameters(parameters);</div><div class="line">    theCamera.setDisplayOrientation(cwRotationFromDisplayToCamera);</div><div class="line">    Camera.Parameters afterParameters = theCamera.getParameters();</div><div class="line">    Camera.Size afterSize = afterParameters.getPreviewSize();</div><div class="line">    <span class="keyword">if</span> (afterSize != <span class="keyword">null</span> &amp;&amp; (bestPreviewSize.x != afterSize.width || bestPreviewSize.y != afterSize.height)) &#123;</div><div class="line">        Log.w(TAG, <span class="string">"Camera said it supported preview size "</span> + bestPreviewSize.x + <span class="string">'x'</span> + bestPreviewSize.y +</div><div class="line">                <span class="string">", but after setting it, preview size is "</span> + afterSize.width + <span class="string">'x'</span> + afterSize.height);</div><div class="line">        bestPreviewSize.x = afterSize.width;</div><div class="line">        bestPreviewSize.y = afterSize.height;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实很明了了，这个方法是将获取到的那些参数整合成Parameters对象set到Camera里。<br>至此，我们大概说了两个问题，一个是如何获取并给相机设置参数，另一个是如何获取摄像头的预览数据并进行处理，接下来还有一个很重要的点需要说明，那就是我们虽然获取了整个预览帧的数据准备对其解析，但实际上，对于条码扫描来说，真正被处理的其实只是扫描框内的那部分图片或者说数据，所以我们在扫描的时候也必须将条码置于框框内，那么这就涉及到了两个部分，一个是在屏幕上绘制这样一个矩形框，另一个是在预览帧里提取框内的数据。这两点分别由以下方法实现。</p>
+<h3 id="6-CameraManager-getFramingRect-方法"><a href="#6-CameraManager-getFramingRect-方法" class="headerlink" title="6.CameraManager.getFramingRect()方法"></a>6.CameraManager.getFramingRect()方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Calculates the framing rect which the UI should draw to show the user where to place the</div><div class="line"> * barcode. This target helps with alignment as well as forces the user to hold the device</div><div class="line"> * far enough away to ensure the image will be in focus.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@return</span> The rectangle to draw on screen in window coordinates.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Rect <span class="title">getFramingRect</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (framingRect == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (camera == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        Point screenResolution = configManager.getScreenResolution();</div><div class="line">        <span class="keyword">if</span> (screenResolution == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// Called early, before init even finished</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">int</span> width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);</div><div class="line">        <span class="keyword">int</span> height = findDesiredDimensionInRange(screenResolution.y, MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);</div><div class="line"></div><div class="line">        <span class="keyword">int</span> leftOffset = (screenResolution.x - width) / <span class="number">2</span>;</div><div class="line">        <span class="keyword">int</span> topOffset = (screenResolution.y - height) / <span class="number">2</span>;</div><div class="line">        framingRect = <span class="keyword">new</span> Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);</div><div class="line">        Log.d(TAG, <span class="string">"Calculated framing rect: "</span> + framingRect);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> framingRect;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个是UI中的方框Rect对象的构造，很简单了，就是根据屏幕分辨率然后按照一个固定的比例来设置方框大小。这个方法在方框的自定义View绘制时调用。</p>
+<h3 id="7-CameraManager-class的getFramingRectInPreview-方法"><a href="#7-CameraManager-class的getFramingRectInPreview-方法" class="headerlink" title="7.CameraManager.class的getFramingRectInPreview()方法"></a>7.CameraManager.class的getFramingRectInPreview()方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Like &#123;<span class="doctag">@link</span> #getFramingRect&#125; but coordinates are in terms of the preview frame,</div><div class="line"> * not UI / screen.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@return</span> &#123;<span class="doctag">@link</span> Rect&#125; expressing barcode scan area in terms of the preview size</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Rect <span class="title">getFramingRectInPreview</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (framingRectInPreview == <span class="keyword">null</span>) &#123;</div><div class="line">        Rect framingRect = getFramingRect();</div><div class="line">        <span class="keyword">if</span> (framingRect == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        Rect rect = <span class="keyword">new</span> Rect(framingRect);</div><div class="line">        Point cameraResolution = configManager.getCameraResolution();</div><div class="line">        Point screenResolution = configManager.getScreenResolution();</div><div class="line">        <span class="keyword">if</span> (cameraResolution == <span class="keyword">null</span> || screenResolution == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// Called early, before init even finished</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (screenResolution.x &lt; screenResolution.y) &#123;</div><div class="line">            <span class="comment">// portrait</span></div><div class="line">            rect.left = rect.left * cameraResolution.y / screenResolution.x;</div><div class="line">            rect.right = rect.right * cameraResolution.y / screenResolution.x;</div><div class="line">            rect.top = rect.top * cameraResolution.x / screenResolution.y;</div><div class="line">            rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// landscape</span></div><div class="line">            rect.left = rect.left * cameraResolution.x / screenResolution.x;</div><div class="line">            rect.right = rect.right * cameraResolution.x / screenResolution.x;</div><div class="line">            rect.top = rect.top * cameraResolution.y / screenResolution.y;</div><div class="line">            rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;</div><div class="line">        &#125;</div><div class="line">        framingRectInPreview = rect;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> framingRectInPreview;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个是预览帧方框Rect对象的构造，其实也很简单，就是因为相机卢兰帧分辨率和屏幕显示分辨率可能不一致，因此首先计算这两者的比例，然后再按比例对步骤6中的UI方框进行缩放，同样，计算比例的时候要区分横竖屏。这个方法是在buildLuminanceSource()中调用的，也就是步骤1中的构造PlanarYUVLuminanceSource对象时，其实还传入了这一Rect对象，来代表有效数据。</p>
+<p>看完是不是有点点乱，因为本文没有系统的讲解，只是将所涉及内容的一些关键点比如Android Camera的使用，以及相应的横竖屏的区别处理做了介绍，真正核心的条码解码算法并没有深入，“浅尝辄止”了，就酱紫吧，有什么问题欢迎大家讨论。</p>
+<p>另，转载请注明出处！文中若有什么错误希望大家探讨指正！</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/12/07/Android二维码扫描的简单实现及源码分析/" class="archive-article-date">
+  	<time datetime="2016-12-07T11:30:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-12-07</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/技术/">技术</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/12/19/Android屏幕适配与资源匹配/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Android屏幕适配与资源匹配
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/09/18/银行POS交易流程及概念浅析/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">银行POS交易流程及概念浅析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android二维码扫描的简单实现及源码分析" data-title="Android二维码扫描的简单实现及源码分析" data-url="http://guojinyu.github.io/2016/12/07/Android二维码扫描的简单实现及源码分析/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"acker"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 郭晋宇
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/业务/" style="font-size: 10px;">业务</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://yikun.github.io/">Yikun</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">帝都小码农，完美主义者</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>
