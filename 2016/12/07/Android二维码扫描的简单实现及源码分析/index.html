@@ -8,20 +8,18 @@
   <link rel="dns-prefetch" href="//guojinyu.com">
   <title>Android二维码扫描的简单实现及源码分析 | 郭晋宇的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。
-条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
+  <meta name="description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。 条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
+<meta name="keywords" content="Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android二维码扫描的简单实现及源码分析">
 <meta property="og:url" content="//guojinyu.com/2016/12/07/Android二维码扫描的简单实现及源码分析/index.html">
 <meta property="og:site_name" content="郭晋宇的技术博客">
-<meta property="og:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。
-条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
+<meta property="og:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。 条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
 <meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/new%20image%20-%20vtj52.jpg">
 <meta property="og:updated_time" content="2017-05-19T05:16:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android二维码扫描的简单实现及源码分析">
-<meta name="twitter:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。
-条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
+<meta name="twitter:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。 条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
 <meta name="twitter:image" content="http://obc3atr48.bkt.clouddn.com/new%20image%20-%20vtj52.jpg">
   
     <link rel="alternative" href="/atom.xml" title="郭晋宇的技术博客" type="application/atom+xml">
