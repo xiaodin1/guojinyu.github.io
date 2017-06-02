@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="郭晋宇的技术博客">
 <meta property="og:description" content="Android屏幕适配是个头疼的问题，同时关于这方面的讲解也是烂大街了，那么为什么还要写这篇博文呢，一方面是想基于Google官方教程和个人开发中的经验总结一份准确精炼的教程，另一方面也是作为一个知识备份。 那么，通过本文你可以学到以下这些： 1.Android界面开发中的那些名词的概念2.如何和一名不懂Android的UI设计师合作3.Android如何进行资源匹配 对应以下三块内容： 名词解释">
 <meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/res-selection-flowchart%20%281%29.png">
-<meta property="og:updated_time" content="2017-02-21T08:42:28.000Z">
+<meta property="og:updated_time" content="2017-06-02T08:33:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android屏幕适配与资源匹配">
 <meta name="twitter:description" content="Android屏幕适配是个头疼的问题，同时关于这方面的讲解也是烂大街了，那么为什么还要写这篇博文呢，一方面是想基于Google官方教程和个人开发中的经验总结一份准确精炼的教程，另一方面也是作为一个知识备份。 那么，通过本文你可以学到以下这些： 1.Android界面开发中的那些名词的概念2.如何和一名不懂Android的UI设计师合作3.Android如何进行资源匹配 对应以下三块内容： 名词解释">
@@ -213,6 +213,7 @@ ga('send', 'pageview');
 <blockquote>
 <p>ldpi ～120dpi<br>mdpi ～160dpi (baseline)<br>hdpi ～240dpi<br>xhdpi ～320dpi<br>xxhdpi ～480dpi<br>xxxhdpi ～640dpi  </p>
 </blockquote>
+<a id="more"></a>
 <p>需要说明的是，上面的每种规格都只是圈定了一个范围，近似于后面的dpi数值，比如对于两台声明自己是hdpi屏幕密度的设备，其实际dpi值可能略有不同。此外，Android官方把mdpi定为基准(baseline)，这个基准有什么用呢，后面就可以看到了。</p>
 <p><strong>density</strong><br>density是真正意义上的屏幕密度，<strong><em>density=dpi/160</em></strong>，160是什么呢？正是我们上面说的基准mdpi的dpi值。在开发中可以由以下代码得到：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getResources().getDisplayMetrics().density;</div></pre></td></tr></table></figure></p>
 <p><strong>dp</strong><br>dp或dip(device independent pixels)即设备独立像素，Android特有的尺寸度量单位，设计的目的就是让其值在不同屏幕密度下能保持统一。在基准密度mdpi下，1dp=1px，因此dp和px的换算关系为<strong><em>dp=px/density=px/(dpi/160)</em></strong></p>

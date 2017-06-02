@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="郭晋宇的技术博客">
 <meta property="og:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。 条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
 <meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/new%20image%20-%20vtj52.jpg">
-<meta property="og:updated_time" content="2017-05-19T05:16:30.000Z">
+<meta property="og:updated_time" content="2017-06-02T08:32:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android二维码扫描的简单实现及源码分析">
 <meta name="twitter:description" content="二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。 条码扫描功能的快速集成默认你使用了Android Stuidio进行开发，直接使用这个开源项目SimpleZXing,">
@@ -213,6 +213,7 @@ ga('send', 'pageview');
 <li>2.在你想调起条码扫描界面的地方(比如YourActivity)，调起二维码扫描界面CaptureActivity  </li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">startActivityForResult(<span class="keyword">new</span> Intent(YourActivity.<span class="keyword">this</span>, CaptureActivity.class), CaptureActivity.REQ_CODE)</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>然后就会打开如下这个界面：</p>
 <p><center><br><img src="http://obc3atr48.bkt.clouddn.com/new%20image%20-%20vtj52.jpg" alt="条码扫描界面"><br></center><br>将条码置于框内，扫描成功后会将解码得到的字符串返回给调起者，所以你只需要在你的Activity的onActivityResult()方法里拿到它进行后续操作即可。</p>
 <p>当然SimpleZXing目前还支持一些设置项，包括摄像头是否开启曝光，扫码成功后是否震动，是否发声，闪光灯模式自动、常开、常关，屏幕自动旋转、横屏、竖屏。</p>

@@ -15,7 +15,7 @@
 <meta property="og:url" content="//guojinyu.com/2017/04/05/Android HTTPS正传/index.html">
 <meta property="og:site_name" content="郭晋宇的技术博客">
 <meta property="og:description" content="随着HTTPS的越来越普及，我们在客户端开发过程中越来越多的被要求从HTTP转换为HTTPS，纵然你开发的是普通APP而非浏览器，正确的编写HTTPS网络代码也是至关重要的。但现实是，大部分的HTTPS相关代码中总是存在各种各样的问题，这些问题使得我们的APP在网络通信中存在严重的漏洞，从而丧失了使用HTTPS的意义。 因此，本文将从以下三个方面来展开介绍，一是对于HTTPS的理解；二是常见的HT">
-<meta property="og:updated_time" content="2017-04-06T08:32:27.000Z">
+<meta property="og:updated_time" content="2017-06-02T08:35:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android HTTPS正传">
 <meta name="twitter:description" content="随着HTTPS的越来越普及，我们在客户端开发过程中越来越多的被要求从HTTP转换为HTTPS，纵然你开发的是普通APP而非浏览器，正确的编写HTTPS网络代码也是至关重要的。但现实是，大部分的HTTPS相关代码中总是存在各种各样的问题，这些问题使得我们的APP在网络通信中存在严重的漏洞，从而丧失了使用HTTPS的意义。 因此，本文将从以下三个方面来展开介绍，一是对于HTTPS的理解；二是常见的HT">
@@ -216,6 +216,7 @@ ga('send', 'pageview');
 </ul>
 <p>开发人员这样写的目的往往是规避SSL异常，但是不仅没有发挥HTTPS的能力反而暴露出了漏洞。</p>
 <p>当然，导致中间人攻击的原因可能还有其他，如CA被攻击导致私钥被盗等等，这种情况不在本文讨论范围内。</p>
+<a id="more"></a>
 <h2 id="HTTPS的正确实现"><a href="#HTTPS的正确实现" class="headerlink" title="HTTPS的正确实现"></a>HTTPS的正确实现</h2><p>如何正确地实现HTTPS，关键在于如何正确地处理证书。</p>
 <p>前文提到，证书认证机构CA会对我们HTTPS通信中用到的公钥进行签名来制作证书，其实就是服务器有一套公私钥，CA也有一套公私钥，CA要用它的私钥对我们的公钥就行数字签名，此即为认证。所以一份证书的主要内容便是三部分，a、服务器生成的公钥，b、申请证书时填写的一些相关信息，c、CA用自己的私钥对a和b内容生成的数字签名。那么当客户端在验证服务端的证书时，客户端必须拥有证书CA的公钥，才能去验证签名。</p>
 <p>所以根据客户端是否拥有CA的公钥，处理证书便分为以下几种情况：</p>

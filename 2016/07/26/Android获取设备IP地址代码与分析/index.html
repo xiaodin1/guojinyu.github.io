@@ -15,7 +15,7 @@
 <meta property="og:url" content="//guojinyu.com/2016/07/26/Android获取设备IP地址代码与分析/index.html">
 <meta property="og:site_name" content="郭晋宇的技术博客">
 <meta property="og:description" content="一直以来，好像没有一段标准的代码能提供Android设备此刻的IP地址，究其原因，Android设备的网卡可能不只一个，如蜂窝网卡、WiFi网卡，而且同一个网卡也可能拥有不止一个IP地址。基于此，一个Android终端很有可能同时拥有多个IP地址（不只是同时拥有IPv4和IPv6地址），比如开启热点共享蜂窝网络的时候，蜂窝网卡拥有一个IPv4地址来访问外网，WiFi网卡拥有一个IPv4地址来作为内">
-<meta property="og:updated_time" content="2017-02-21T08:42:28.000Z">
+<meta property="og:updated_time" content="2017-06-02T08:33:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android获取设备IP地址代码与分析">
 <meta name="twitter:description" content="一直以来，好像没有一段标准的代码能提供Android设备此刻的IP地址，究其原因，Android设备的网卡可能不只一个，如蜂窝网卡、WiFi网卡，而且同一个网卡也可能拥有不止一个IP地址。基于此，一个Android终端很有可能同时拥有多个IP地址（不只是同时拥有IPv4和IPv6地址），比如开启热点共享蜂窝网络的时候，蜂窝网卡拥有一个IPv4地址来访问外网，WiFi网卡拥有一个IPv4地址来作为内">
@@ -210,6 +210,7 @@ ga('send', 'pageview');
 <blockquote>
 <p>Returns an InetAddress for the local host if possible, or the loopback address otherwise. This method works by getting the hostname, performing a DNS lookup, and then taking the first returned address.<br>Note that if the host doesn’t have a hostname set – as Android devices typically don’t – this method will effectively return the loopback address, albeit by getting the name localhost and then doing a lookup to translate that to 127.0.0.1.</p>
 </blockquote>
+<a id="more"></a>
 <p>可以看出，一般在Android平台上，由于网络通信设备没有设置hostname，因此无法进行DNS检索得到其相应的IP地址，因此该方法会返回本地回环地址，即127.0.0.1，也就是说这个方法在Android平台上无法达到我们一般的获取本机IP地址的目的，经过测试，结果也确实如此。</p>
 <h2 id="2-部分可行的方法"><a href="#2-部分可行的方法" class="headerlink" title="2. 部分可行的方法"></a>2. 部分可行的方法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);</div><div class="line"><span class="keyword">int</span> ipAddressInt = wm.getConnectionInfo().getIpAddress();</div><div class="line">String ipAddress = String.format(Locale.getDefault(), <span class="string">"%d.%d.%d.%d"</span>, (ipAddressInt &amp; <span class="number">0xff</span>), (ipAddressInt &gt;&gt; <span class="number">8</span> &amp; <span class="number">0xff</span>), (ipAddressInt &gt;&gt; <span class="number">16</span> &amp; <span class="number">0xff</span>), (ipAddressInt &gt;&gt; <span class="number">24</span> &amp; <span class="number">0xff</span>));</div></pre></td></tr></table></figure>
 <p>方法执行所需权限为：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_WIFI_STATE"</span>/&gt;</span></div></pre></td></tr></table></figure></p>
