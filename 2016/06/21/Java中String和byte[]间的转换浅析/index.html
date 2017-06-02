@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Java中String和byte[]间的转换浅析 | 郭晋宇的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Java语言中字符串类型和字节数组类型相互之间的转换经常发生，网上的分析及代码也比较多，本文将分析总结常规的byte[]和String间的转换以及十六进制String和byte[]间相互转换的原理及实现。
+1. String转byte[]首先我们来分析一下常规的String转byte[]的方法，代码如下：1234567public static byte[] strToByteArray(Stri">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中String和byte[]间的转换浅析">
+<meta property="og:url" content="http://guojinyu.github.io/2016/06/21/Java中String和byte[]间的转换浅析/index.html">
+<meta property="og:site_name" content="郭晋宇的技术博客">
+<meta property="og:description" content="Java语言中字符串类型和字节数组类型相互之间的转换经常发生，网上的分析及代码也比较多，本文将分析总结常规的byte[]和String间的转换以及十六进制String和byte[]间相互转换的原理及实现。
+1. String转byte[]首先我们来分析一下常规的String转byte[]的方法，代码如下：1234567public static byte[] strToByteArray(Stri">
+<meta property="og:updated_time" content="2017-02-21T08:42:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中String和byte[]间的转换浅析">
+<meta name="twitter:description" content="Java语言中字符串类型和字节数组类型相互之间的转换经常发生，网上的分析及代码也比较多，本文将分析总结常规的byte[]和String间的转换以及十六进制String和byte[]间相互转换的原理及实现。
+1. String转byte[]首先我们来分析一下常规的String转byte[]的方法，代码如下：1234567public static byte[] strToByteArray(Stri">
+  
+    <link rel="alternative" href="/atom.xml" title="郭晋宇的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/images/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-61761428-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/images/avatar.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">郭晋宇</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">0.2+0.4=0.6000000000000001</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">博文</a></li>
+	        
+				<li><a href="/douban">读书</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">郭晋宇</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/images/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">郭晋宇</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">0.2+0.4=0.6000000000000001</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">博文</a></li>
+		        
+					<li><a href="/douban">读书</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Java中String和byte[]间的转换浅析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java中String和byte[]间的转换浅析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java语言中字符串类型和字节数组类型相互之间的转换经常发生，网上的分析及代码也比较多，本文将分析总结常规的byte[]和String间的转换以及十六进制String和byte[]间相互转换的原理及实现。</p>
+<h2 id="1-String转byte"><a href="#1-String转byte" class="headerlink" title="1. String转byte[]"></a>1. String转byte[]</h2><p>首先我们来分析一下常规的String转byte[]的方法，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] strToByteArray(String str) &#123;</div><div class="line">    <span class="keyword">if</span> (str == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">byte</span>[] byteArray = str.getBytes();</div><div class="line">    <span class="keyword">return</span> byteArray;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>很简单，就是调用String类的getBytes()方法。看JDK源码可以发现该方法最终调用了String类如下的方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* JDK source code */</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] getBytes(Charset charset) &#123;</div><div class="line">    String canonicalCharsetName = charset.name();</div><div class="line">    <span class="keyword">if</span> (canonicalCharsetName.equals(<span class="string">"UTF-8"</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> Charsets.toUtf8Bytes(value, offset, count);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (canonicalCharsetName.equals(<span class="string">"ISO-8859-1"</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> Charsets.toIsoLatin1Bytes(value, offset, count);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (canonicalCharsetName.equals(<span class="string">"US-ASCII"</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> Charsets.toAsciiBytes(value, offset, count);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (canonicalCharsetName.equals(<span class="string">"UTF-16BE"</span>)) &#123;</div><div class="line">        <span class="keyword">return</span> Charsets.toBigEndianUtf16Bytes(value, offset, count);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        CharBuffer chars = CharBuffer.wrap(<span class="keyword">this</span>.value, <span class="keyword">this</span>.offset, <span class="keyword">this</span>.count);</div><div class="line">        ByteBuffer buffer = charset.encode(chars.asReadOnlyBuffer());</div><div class="line">        <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[buffer.limit()];</div><div class="line">        buffer.get(bytes);</div><div class="line">        <span class="keyword">return</span> bytes;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码其实就是根据给定的编码方式进行编码。如果调用的是不带参数的getBytes()方法，则使用默认的编码方式，如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* JDK source code */</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Charset <span class="title">getDefaultCharset</span><span class="params">()</span> </span>&#123;</div><div class="line">    String encoding = System.getProperty(<span class="string">"file.encoding"</span>, <span class="string">"UTF-8"</span>);</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">return</span> Charset.forName(encoding);</div><div class="line">    &#125; <span class="keyword">catch</span> (UnsupportedCharsetException e) &#123;</div><div class="line">        <span class="keyword">return</span> Charset.forName(<span class="string">"UTF-8"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>关于默认的编码方式，Java API是这样说的：</p>
+<blockquote>
+<p>The default charset is determined during virtual-machine startup and typically depends upon the locale and charset of the underlying operating system.</p>
+</blockquote>
+<p>同样，由上述代码可以看出，默认编码方式是由System类的”file.encoding”属性决定的，经过测试，在简体中文Windows操作系统下，默认编码方式为”GBK”，在Android平台上，默认编码方式为”UTF-8”。</p>
+<h2 id="2-byte-转String"><a href="#2-byte-转String" class="headerlink" title="2. byte[]转String"></a>2. byte[]转String</h2><p>接下来分析一下常规的byte[]转为String的方法，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">byteArrayToStr</span><span class="params">(<span class="keyword">byte</span>[] byteArray)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (byteArray == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    String str = <span class="keyword">new</span> String(byteArray);</div><div class="line">    <span class="keyword">return</span> str;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>很简单，就是String的构造方法之一。那我们分析Java中String的源码，可以看出所有以byte[]为参数的构造方法最终都调用了如下代码所示的构造方法。需要注意的是Java中String类的数据是Unicode类型的，因此上述的getBytes()方法是把Unicode类型转化为指定编码方式的byte数组；而这里的Charset为读取该byte数组时所使用的编码方式。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* JDK source code */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">(<span class="keyword">byte</span>[] data, <span class="keyword">int</span> offset, <span class="keyword">int</span> byteCount, Charset charset)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> ((offset | byteCount) &lt; <span class="number">0</span> || byteCount &gt; data.length - offset) &#123; </div><div class="line">        <span class="keyword">throw</span> failedBoundsCheck(data.length, offset, byteCount);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// We inline UTF-8, ISO-8859-1, and US-ASCII decoders for speed and because</span></div><div class="line">    <span class="comment">// 'count' and 'value' are final.</span></div><div class="line">    String canonicalCharsetName = charset.name();</div><div class="line">    <span class="keyword">if</span> (canonicalCharsetName.equals(<span class="string">"UTF-8"</span>)) &#123;</div><div class="line">        <span class="keyword">byte</span>[] d = data;</div><div class="line">        <span class="keyword">char</span>[] v = <span class="keyword">new</span> <span class="keyword">char</span>[byteCount];</div><div class="line">        <span class="keyword">int</span> idx = offset;</div><div class="line">        <span class="keyword">int</span> last = offset + byteCount;</div><div class="line">        <span class="keyword">int</span> s = <span class="number">0</span>;</div><div class="line">        outer:</div><div class="line">        <span class="keyword">while</span> (idx &lt; last) &#123;</div><div class="line">            <span class="keyword">byte</span> b0 = d[idx++];</div><div class="line">            <span class="keyword">if</span> ((b0 &amp; <span class="number">0x80</span>) == <span class="number">0</span>) &#123;</div><div class="line">                <span class="comment">// 0xxxxxxx</span></div><div class="line">                <span class="comment">// Range:  U-00000000 - U-0000007F</span></div><div class="line">                <span class="keyword">int</span> val = b0 &amp; <span class="number">0xff</span>;</div><div class="line">                v[s++] = (<span class="keyword">char</span>) val;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (((b0 &amp; <span class="number">0xe0</span>) == <span class="number">0xc0</span>) || ((b0 &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) ||</div><div class="line">                ((b0 &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) || ((b0 &amp; <span class="number">0xfc</span>) == <span class="number">0xf8</span>) || ((b0 &amp; <span class="number">0xfe</span>)</div><div class="line">                == <span class="number">0xfc</span>)) &#123;</div><div class="line">                <span class="keyword">int</span> utfCount = <span class="number">1</span>;</div><div class="line">                <span class="keyword">if</span> ((b0 &amp; <span class="number">0xf0</span>) == <span class="number">0xe0</span>) utfCount = <span class="number">2</span>;</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ((b0 &amp; <span class="number">0xf8</span>) == <span class="number">0xf0</span>) utfCount = <span class="number">3</span>;</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ((b0 &amp; <span class="number">0xfc</span>) == <span class="number">0xf8</span>) utfCount = <span class="number">4</span>;</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span> ((b0 &amp; <span class="number">0xfe</span>) == <span class="number">0xfc</span>) utfCount = <span class="number">5</span>;</div><div class="line">                <span class="comment">// 110xxxxx (10xxxxxx)+</span></div><div class="line">                <span class="comment">// Range:  U-00000080 - U-000007FF (count == 1)</span></div><div class="line">                <span class="comment">// Range:  U-00000800 - U-0000FFFF (count == 2)</span></div><div class="line">                <span class="comment">// Range:  U-00010000 - U-001FFFFF (count == 3)</span></div><div class="line">                <span class="comment">// Range:  U-00200000 - U-03FFFFFF (count == 4)</span></div><div class="line">                <span class="comment">// Range:  U-04000000 - U-7FFFFFFF (count == 5)</span></div><div class="line">                <span class="keyword">if</span> (idx + utfCount &gt; last) &#123;</div><div class="line">                    v[s++] = REPLACEMENT_CHAR;</div><div class="line">                    <span class="keyword">continue</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// Extract usable bits from b0</span></div><div class="line">                <span class="keyword">int</span> val = b0 &amp; (<span class="number">0x1f</span> &gt;&gt; (utfCount - <span class="number">1</span>));</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; utfCount; ++i) &#123;</div><div class="line">                    <span class="keyword">byte</span> b = d[idx++];</div><div class="line">                    <span class="keyword">if</span> ((b &amp; <span class="number">0xc0</span>) != <span class="number">0x80</span>) &#123;</div><div class="line">                        v[s++] = REPLACEMENT_CHAR;</div><div class="line">                        idx--; <span class="comment">// Put the input char back</span></div><div class="line">                        <span class="keyword">continue</span> outer;</div><div class="line">                    &#125;</div><div class="line">                    <span class="comment">// Push new bits in from the right side</span></div><div class="line">                    val &lt;&lt;= <span class="number">6</span>;</div><div class="line">                    val |= b &amp; <span class="number">0x3f</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// Note: Java allows overlong char</span></div><div class="line">                <span class="comment">// specifications To disallow, check that val</span></div><div class="line">                <span class="comment">// is greater than or equal to the minimum</span></div><div class="line">                <span class="comment">// value for each count:</span></div><div class="line">                <span class="comment">//</span></div><div class="line">                <span class="comment">// count    min value</span></div><div class="line">                <span class="comment">// -----   ----------</span></div><div class="line">                <span class="comment">//   1           0x80</span></div><div class="line">                <span class="comment">//   2          0x800</span></div><div class="line">                <span class="comment">//   3        0x10000</span></div><div class="line">                <span class="comment">//   4       0x200000</span></div><div class="line">                <span class="comment">//   5      0x4000000</span></div><div class="line">                <span class="comment">// Allow surrogate values (0xD800 - 0xDFFF) to</span></div><div class="line">                <span class="comment">// be specified using 3-byte UTF values only</span></div><div class="line">                <span class="keyword">if</span> ((utfCount != <span class="number">2</span>) &amp;&amp; (val &gt;= <span class="number">0xD800</span>) &amp;&amp; (val &lt;= <span class="number">0xDFFF</span>)) &#123;</div><div class="line">                    v[s++] = REPLACEMENT_CHAR;</div><div class="line">                    <span class="keyword">continue</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// Reject chars greater than the Unicode maximum of U+10FFFF.</span></div><div class="line">                <span class="keyword">if</span> (val &gt; <span class="number">0x10FFFF</span>) &#123;</div><div class="line">                    v[s++] = REPLACEMENT_CHAR;</div><div class="line">                    <span class="keyword">continue</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// Encode chars from U+10000 up as surrogate pairs</span></div><div class="line">                <span class="keyword">if</span> (val &lt; <span class="number">0x10000</span>) &#123;</div><div class="line">                    v[s++] = (<span class="keyword">char</span>) val;</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="keyword">int</span> x = val &amp; <span class="number">0xffff</span>;</div><div class="line">                    <span class="keyword">int</span> u = (val &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0x1f</span>;</div><div class="line">                    <span class="keyword">int</span> w = (u - <span class="number">1</span>) &amp; <span class="number">0xffff</span>;</div><div class="line">                    <span class="keyword">int</span> hi = <span class="number">0xd800</span> | (w &lt;&lt; <span class="number">6</span>) | (x &gt;&gt; <span class="number">10</span>);</div><div class="line">                    <span class="keyword">int</span> lo = <span class="number">0xdc00</span> | (x &amp; <span class="number">0x3ff</span>);</div><div class="line">                    v[s++] = (<span class="keyword">char</span>) hi;</div><div class="line">                    v[s++] = (<span class="keyword">char</span>) lo;</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// Illegal values 0x8*, 0x9*, 0xa*, 0xb*, 0xfd-0xff</span></div><div class="line">                v[s++] = REPLACEMENT_CHAR;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (s == byteCount) &#123;</div><div class="line">            <span class="comment">// We guessed right, so we can use our temporary array as-is.</span></div><div class="line">            <span class="keyword">this</span>.offset = <span class="number">0</span>;</div><div class="line">            <span class="keyword">this</span>.value = v;</div><div class="line">            <span class="keyword">this</span>.count = s;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// Our temporary array was too big, so reallocate and copy.</span></div><div class="line">            <span class="keyword">this</span>.offset = <span class="number">0</span>;</div><div class="line">            <span class="keyword">this</span>.value = <span class="keyword">new</span> <span class="keyword">char</span>[s];</div><div class="line">            <span class="keyword">this</span>.count = s;</div><div class="line">            System.arraycopy(v, <span class="number">0</span>, value, <span class="number">0</span>, s);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (canonicalCharsetName.equals(<span class="string">"ISO-8859-1"</span>)) &#123;</div><div class="line">        <span class="keyword">this</span>.offset = <span class="number">0</span>;</div><div class="line">        <span class="keyword">this</span>.value = <span class="keyword">new</span> <span class="keyword">char</span>[byteCount];</div><div class="line">        <span class="keyword">this</span>.count = byteCount;</div><div class="line">        Charsets.isoLatin1BytesToChars(data, offset, byteCount, value);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (canonicalCharsetName.equals(<span class="string">"US-ASCII"</span>)) &#123;</div><div class="line">        <span class="keyword">this</span>.offset = <span class="number">0</span>;</div><div class="line">        <span class="keyword">this</span>.value = <span class="keyword">new</span> <span class="keyword">char</span>[byteCount];</div><div class="line">        <span class="keyword">this</span>.count = byteCount;</div><div class="line">        Charsets.asciiBytesToChars(data, offset, byteCount, value);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        CharBuffer cb = charset.decode(ByteBuffer.wrap(data, offset, byteCount));</div><div class="line">        <span class="keyword">this</span>.offset = <span class="number">0</span>;</div><div class="line">        <span class="keyword">this</span>.count = cb.length();</div><div class="line">        <span class="keyword">if</span> (count &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// We could use cb.array() directly, but that would mean we'd have to trust</span></div><div class="line">            <span class="comment">// the CharsetDecoder doesn't hang on to the CharBuffer and mutate it later,</span></div><div class="line">            <span class="comment">// which would break String's immutability guarantee. It would also tend to</span></div><div class="line">            <span class="comment">// mean that we'd be wasting memory because CharsetDecoder doesn't trim the</span></div><div class="line">            <span class="comment">// array. So we copy.</span></div><div class="line">            <span class="keyword">this</span>.value = <span class="keyword">new</span> <span class="keyword">char</span>[count];</div><div class="line">            System.arraycopy(cb.array(), <span class="number">0</span>, value, <span class="number">0</span>, count);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">this</span>.value = EmptyArray.CHAR;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体的转换过程较为复杂，其实就是将byte数组的一个或多个元素按指定的Charset类型读取并转换为char类型（char本身就是以Unicode编码方式存储的），因为String类的核心是其内部维护的char数组。因此有兴趣的同学可以研究下各种编码方式的编码规则，然后才能看懂具体的转换过程。</p>
+<h2 id="3-byte-转十六进制String"><a href="#3-byte-转十六进制String" class="headerlink" title="3. byte[]转十六进制String"></a>3. byte[]转十六进制String</h2><p>所谓十六进制String，就是字符串里面的字符都是十六进制形式，因为一个byte是八位，可以用两个十六进制位来表示，因此，byte数组中的每个元素可以转换为两个十六进制形式的char，所以最终的HexString的长度是byte数组长度的两倍。闲话少说上代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">byteArrayToHexStr</span><span class="params">(<span class="keyword">byte</span>[] byteArray)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (byteArray == <span class="keyword">null</span>)&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">char</span>[] hexArray = <span class="string">"0123456789ABCDEF"</span>.toCharArray();</div><div class="line">    <span class="keyword">char</span>[] hexChars = <span class="keyword">new</span> <span class="keyword">char</span>[byteArray.length * <span class="number">2</span>];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; byteArray.length; j++) &#123;</div><div class="line">        <span class="keyword">int</span> v = byteArray[j] &amp; <span class="number">0xFF</span>;</div><div class="line">        hexChars[j * <span class="number">2</span>] = hexArray[v &gt;&gt;&gt; <span class="number">4</span>];</div><div class="line">        hexChars[j * <span class="number">2</span> + <span class="number">1</span>] = hexArray[v &amp; <span class="number">0x0F</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> String(hexChars);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码中，之所以要将byte数值和0xFF按位与，是因为我们为了方便后面的无符号移位操作（无符号右移运算符&gt;&gt;&gt;只对32位和64位的值有意义），要将byte数据转换为int类型，而如果直接转换就会出现问题。因为java里面二进制是以补码形式存在的，如果直接转换，位扩展会产生问题，如值为-1的byte存储的二进制形式为其补码11111111，而转换为int后为11111111111111111111111111111111，直接使用该值结果就不对了。而0xFF默认是int类型，即0x000000FF，一个byte值跟0xFF相与会先将那个byte值转化成int类型运算，这样，相与的结果中高的24个比特就总会被清0，后面的运算才会正确。</p>
+<h2 id="4-十六进制String转byte"><a href="#4-十六进制String转byte" class="headerlink" title="4. 十六进制String转byte[]"></a>4. 十六进制String转byte[]</h2><p>没什么好说的了，就是byte[]转十六进制String的逆过程，放代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] hexStrToByteArray(String str)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (str == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (str.length() == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">0</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">byte</span>[] byteArray = <span class="keyword">new</span> <span class="keyword">byte</span>[str.length() / <span class="number">2</span>];</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; byteArray.length; i++)&#123;</div><div class="line">        String subStr = str.substring(<span class="number">2</span> * i, <span class="number">2</span> * i + <span class="number">2</span>);</div><div class="line">        byteArray[i] = ((<span class="keyword">byte</span>)Integer.parseInt(subStr, <span class="number">16</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> byteArray;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>文中所有代码可以在<a href="https://github.com/GuoJinyu/AndroidUtils/tree/master" target="_blank" rel="external">个人github主页</a>查看和下载。</p>
+<p>另，转载请注明出处！文中若有什么错误希望大家探讨指正！</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/06/21/Java中String和byte[]间的转换浅析/" class="archive-article-date">
+  	<time datetime="2016-06-21T06:00:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-06-21</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/技术/">技术</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/07/26/Android获取设备IP地址代码与分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Android获取设备IP地址代码与分析
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 郭晋宇
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/业务/" style="font-size: 10px;">业务</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://yikun.github.io/">Yikun</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.dingyoung.com/">ADing</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">西电本硕，专注通信七年（LTE、WiFi、Ad-hoc、认知网络），Android开发三年（实验室-&gt;Baidu-&gt;Aisino），目前在学习数据相关知识及技术（Python、爬虫、机器学习），对地图、金融支付、征信业务有一定了解。</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

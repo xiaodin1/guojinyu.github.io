@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Android使用Builder模式自定义Dialog | 郭晋宇的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="首先说说为啥要自定义Dialog，在任何软件操作系统中，Dialog即对话框都是一种重要的交互模式与信息载体，而Android系统本身的Dialog拥有固定的样式，并且在5.0后采用Material Design设计风格的Dialog美观大气。但是我们开发人员在实际项目过程中遇到的需求是多种多样的，有时我们要匹配APP自己的设计风格，有时我们会觉得系统的对话框使用起来不够自由，因此自己定义一个适合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android使用Builder模式自定义Dialog">
+<meta property="og:url" content="http://guojinyu.github.io/2016/08/03/Android使用Builder模式自定义Dialog/index.html">
+<meta property="og:site_name" content="郭晋宇的技术博客">
+<meta property="og:description" content="首先说说为啥要自定义Dialog，在任何软件操作系统中，Dialog即对话框都是一种重要的交互模式与信息载体，而Android系统本身的Dialog拥有固定的样式，并且在5.0后采用Material Design设计风格的Dialog美观大气。但是我们开发人员在实际项目过程中遇到的需求是多种多样的，有时我们要匹配APP自己的设计风格，有时我们会觉得系统的对话框使用起来不够自由，因此自己定义一个适合">
+<meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/245941188562351983.png">
+<meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/360263159663942597.png">
+<meta property="og:image" content="http://obc3atr48.bkt.clouddn.com/704131486458469105.png">
+<meta property="og:updated_time" content="2017-02-21T08:42:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android使用Builder模式自定义Dialog">
+<meta name="twitter:description" content="首先说说为啥要自定义Dialog，在任何软件操作系统中，Dialog即对话框都是一种重要的交互模式与信息载体，而Android系统本身的Dialog拥有固定的样式，并且在5.0后采用Material Design设计风格的Dialog美观大气。但是我们开发人员在实际项目过程中遇到的需求是多种多样的，有时我们要匹配APP自己的设计风格，有时我们会觉得系统的对话框使用起来不够自由，因此自己定义一个适合">
+<meta name="twitter:image" content="http://obc3atr48.bkt.clouddn.com/245941188562351983.png">
+  
+    <link rel="alternative" href="/atom.xml" title="郭晋宇的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/assets/images/favicon.png">
+  
+  <script src="/style.js"></script>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-61761428-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/assets/images/avatar.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">郭晋宇</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">0.2+0.4=0.6000000000000001</p>
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">博文</a></li>
+	        
+				<li><a href="/douban">读书</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a class="js-smart-menu" data-idx="0" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="1" href="javascript:void(0)">标签</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="2" href="javascript:void(0)">友链</a>
+    			
+    			
+            
+    			
+    			<a class="js-smart-menu" data-idx="3" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+		        
+					<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+		        
+					<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+		        
+					<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-list"></i></div>
+  		<h1 class="header-author js-mobile-header hide">郭晋宇</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+					<img src="/assets/images/avatar.png" class="js-avatar">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">郭晋宇</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">0.2+0.4=0.6000000000000001</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">博文</a></li>
+		        
+					<li><a href="/douban">读书</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/GuoJinyu" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/rescueq" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/ackerkwok" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap">
+        <article id="post-Android使用Builder模式自定义Dialog" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android使用Builder模式自定义Dialog
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>首先说说为啥要自定义Dialog，在任何软件操作系统中，Dialog即对话框都是一种重要的交互模式与信息载体，而Android系统本身的Dialog拥有固定的样式，并且在5.0后采用Material Design设计风格的Dialog美观大气。但是我们开发人员在实际项目过程中遇到的需求是多种多样的，有时我们要匹配APP自己的设计风格，有时我们会觉得系统的对话框使用起来不够自由，因此自己定义一个适合自己的Dialog是很有必要的。</p>
+<p>然后为什么要用Builder模式呢，Builder设计模式是一步步创建一个复杂对象的创建型模式，它允许用户在不知道内部构建细节的情况下，可以更精细地控制对象的构造流程。它的优点就在于将对象的构建和表示分离从而解耦。我们都知道Android系统自身的对话框如AlertDialog就采用了Builder模式，因此可见Builder模式很适合用来构建Dialog对象。</p>
+<p>好，废话少说，上代码。</p>
+<ul>
+<li><strong>BaseDialog.java</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.acker.android.dialog;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.app.Dialog;</div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.text.TextUtils;</div><div class="line"><span class="keyword">import</span> android.view.View;</div><div class="line"><span class="keyword">import</span> android.widget.Button;</div><div class="line"><span class="keyword">import</span> android.widget.FrameLayout;</div><div class="line"><span class="keyword">import</span> android.widget.LinearLayout;</div><div class="line"><span class="keyword">import</span> android.widget.ProgressBar;</div><div class="line"><span class="keyword">import</span> android.widget.TextView;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 自定义Dialog基类</div><div class="line"> *</div><div class="line"> * <span class="doctag">@author</span> guojinyu</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseDialog</span> <span class="keyword">extends</span> <span class="title">Dialog</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> TextView tvTitle;</div><div class="line">    <span class="keyword">private</span> TextView tvMsg;</div><div class="line">    <span class="keyword">private</span> ProgressBar pbLoading;</div><div class="line">    <span class="keyword">private</span> Button btnPositive;</div><div class="line">    <span class="keyword">private</span> Button btnNegative;</div><div class="line">    <span class="keyword">private</span> FrameLayout flCustom;</div><div class="line">    <span class="keyword">private</span> View.OnClickListener onDefaultClickListener = <span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">            cancel();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">private</span> View.OnClickListener onPositiveListener = onDefaultClickListener;</div><div class="line">    <span class="keyword">private</span> View.OnClickListener onNegativeListener = onDefaultClickListener;</div><div class="line">    <span class="keyword">private</span> String mTitle;</div><div class="line">    <span class="keyword">private</span> String mMessage;</div><div class="line">    <span class="keyword">private</span> String positiveText;</div><div class="line">    <span class="keyword">private</span> String negativeText;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isProgressBarShow = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isNegativeBtnShow = <span class="keyword">true</span>;</div><div class="line">    <span class="keyword">private</span> View mView;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">BaseDialog</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, R.style.MyDialog);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.dialog_base);</div><div class="line">        flCustom = (FrameLayout) findViewById(R.id.fl_dialog_content);</div><div class="line">        tvTitle = (TextView) findViewById(R.id.tv_title);</div><div class="line">        pbLoading = (ProgressBar) findViewById(R.id.pb_loading);</div><div class="line">        tvMsg = (TextView) findViewById(R.id.tv_msg);</div><div class="line">        btnPositive = (Button) findViewById(R.id.btn_positive);</div><div class="line">        btnNegative = (Button) findViewById(R.id.btn_negative);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 调用完Builder类的create()方法后显示该对话框的方法</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.show();</div><div class="line">        show(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">(BaseDialog mDialog)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(mDialog.mTitle)) &#123;</div><div class="line">            mDialog.tvTitle.setText(mDialog.mTitle);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (mDialog.mView != <span class="keyword">null</span>) &#123;</div><div class="line">            mDialog.flCustom.addView(mDialog.mView);</div><div class="line">            mDialog.pbLoading.setVisibility(View.GONE);</div><div class="line">            mDialog.tvMsg.setVisibility(View.GONE);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">if</span> (!TextUtils.isEmpty(mDialog.mMessage)) &#123;</div><div class="line">                mDialog.tvMsg.setText(mDialog.mMessage);</div><div class="line">                mDialog.tvMsg.setVisibility(View.VISIBLE);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (isProgressBarShow) &#123;</div><div class="line">                mDialog.pbLoading.setVisibility(View.VISIBLE);</div><div class="line">                mDialog.btnPositive.setVisibility(View.GONE);</div><div class="line">                mDialog.btnNegative.setVisibility(View.GONE);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (!mDialog.isNegativeBtnShow) &#123;</div><div class="line">            mDialog.btnNegative.setVisibility(View.GONE);</div><div class="line">            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mDialog.btnPositive</div><div class="line">                    .getLayoutParams();</div><div class="line">            layoutParams.setMargins(<span class="number">150</span>, layoutParams.topMargin, <span class="number">150</span>, layoutParams.bottomMargin);</div><div class="line">            mDialog.btnPositive.setLayoutParams(layoutParams);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            mDialog.btnNegative.setOnClickListener(mDialog.onNegativeListener);</div><div class="line">            <span class="keyword">if</span> (!TextUtils.isEmpty(mDialog.negativeText)) &#123;</div><div class="line">                mDialog.btnNegative.setText(mDialog.negativeText);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        mDialog.btnPositive.setOnClickListener(mDialog.onPositiveListener);</div><div class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(mDialog.positiveText)) &#123;</div><div class="line">            mDialog.btnPositive.setText(mDialog.positiveText);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line"></div><div class="line">        <span class="keyword">private</span> BaseDialog mDialog;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">            mDialog = <span class="keyword">new</span> BaseDialog(context);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置对话框标题</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> title</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setTitle</span><span class="params">(String title)</span> </span>&#123;</div><div class="line">            mDialog.mTitle = title;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置对话框文本内容,如果调用了setView()方法，该项失效</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> msg</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setMessage</span><span class="params">(String msg)</span> </span>&#123;</div><div class="line">            mDialog.mMessage = msg;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置确认按钮的回调</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> onClickListener</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setPositiveButton</span><span class="params">(View.OnClickListener onClickListener)</span> </span>&#123;</div><div class="line">            mDialog.onPositiveListener = onClickListener;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置确认按钮的回调</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> btnText,onClickListener</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setPositiveButton</span><span class="params">(String btnText, View.OnClickListener onClickListener)</span> </span>&#123;</div><div class="line">            mDialog.positiveText = btnText;</div><div class="line">            mDialog.onPositiveListener = onClickListener;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置取消按钮的回掉</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> onClickListener</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setNegativeButton</span><span class="params">(View.OnClickListener onClickListener)</span> </span>&#123;</div><div class="line">            mDialog.onNegativeListener = onClickListener;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置取消按钮的回调</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> btnText,onClickListener</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setNegativeButton</span><span class="params">(String btnText, View.OnClickListener onClickListener)</span> </span>&#123;</div><div class="line">            mDialog.negativeText = btnText;</div><div class="line">            mDialog.onNegativeListener = onClickListener;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置手否显示ProgressBar，默认不显示</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> isProgressBarShow</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setProgressBarShow</span><span class="params">(<span class="keyword">boolean</span> isProgressBarShow)</span> </span>&#123;</div><div class="line">            mDialog.isProgressBarShow = isProgressBarShow;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置是否显示取消按钮，默认显示</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> isNegativeBtnShow</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setNegativeBtnShow</span><span class="params">(<span class="keyword">boolean</span> isNegativeBtnShow)</span> </span>&#123;</div><div class="line">            mDialog.isNegativeBtnShow = isNegativeBtnShow;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置自定义内容View</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> view</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setView</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">            mDialog.mView = view;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置该对话框能否被Cancel掉，默认可以</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> cancelable</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setCancelable</span><span class="params">(<span class="keyword">boolean</span> cancelable)</span> </span>&#123;</div><div class="line">            mDialog.setCancelable(cancelable);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置对话框被cancel对应的回调接口，cancel()方法被调用时才会回调该接口</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> onCancelListener</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setOnCancelListener</span><span class="params">(OnCancelListener onCancelListener)</span> </span>&#123;</div><div class="line">            mDialog.setOnCancelListener(onCancelListener);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 设置对话框消失对应的回调接口，一切对话框消失都会回调该接口</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> onDismissListener</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> Builder <span class="title">setOnDismissListener</span><span class="params">(OnDismissListener onDismissListener)</span> </span>&#123;</div><div class="line">            mDialog.setOnDismissListener(onDismissListener);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 通过Builder类设置完属性后构造对话框的方法</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> BaseDialog <span class="title">create</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> mDialog;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码很简单，BaseDialog类内定义一些对话框要显示的控件和这些控件对应的一些属性，以及最终将所有属性填入到控件的方法show()。Builder类是BaseDialog的一个内部类，其中定义了BaseDialog类的所有属性的set方法以及装配完毕后的create()方法。</p>
+<ul>
+<li>对应的自定义Dialog的布局文件 <strong>dialog_base.xml</strong>如下：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_marginLeft</span>=<span class="string">"20dp"</span></div><div class="line">    <span class="attr">android:layout_marginRight</span>=<span class="string">"20dp"</span></div><div class="line">    <span class="attr">android:background</span>=<span class="string">"@drawable/bg_base_dialog"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/tv_title"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_marginBottom</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:layout_marginTop</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">        <span class="attr">android:textColor</span>=<span class="string">"@android:color/black"</span></div><div class="line">        <span class="attr">android:textSize</span>=<span class="string">"18sp"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">View</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"1dp"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@android:color/black"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"20dp"</span></div><div class="line">        <span class="attr">android:layout_marginRight</span>=<span class="string">"20dp"</span></div><div class="line">        <span class="attr">android:orientation</span>=<span class="string">"horizontal"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">ProgressBar</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/pb_loading"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:layout_marginBottom</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_marginRight</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_marginTop</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:visibility</span>=<span class="string">"gone"</span> /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/tv_msg"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">            <span class="attr">android:layout_gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:layout_marginBottom</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_marginTop</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@android:color/black"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"18sp"</span></div><div class="line">            <span class="attr">android:visibility</span>=<span class="string">"gone"</span> /&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">FrameLayout</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/fl_dialog_content"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>&gt;<span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:orientation</span>=<span class="string">"horizontal"</span>&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/btn_negative"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"40dp"</span></div><div class="line">            <span class="attr">android:layout_marginBottom</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_marginLeft</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_marginRight</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">            <span class="attr">android:background</span>=<span class="string">"@drawable/bg_dialog_btn_negative"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"取消"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@android:color/white"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"18sp"</span> /&gt;</div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">Button</span></span></div><div class="line">            <span class="attr">android:id</span>=<span class="string">"@+id/btn_positive"</span></div><div class="line">            <span class="attr">android:layout_width</span>=<span class="string">"0dp"</span></div><div class="line">            <span class="attr">android:layout_height</span>=<span class="string">"40dp"</span></div><div class="line">            <span class="attr">android:layout_marginBottom</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_marginLeft</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_marginRight</span>=<span class="string">"20dp"</span></div><div class="line">            <span class="attr">android:layout_weight</span>=<span class="string">"1"</span></div><div class="line">            <span class="attr">android:background</span>=<span class="string">"@drawable/bg_dialog_btn_positive"</span></div><div class="line">            <span class="attr">android:gravity</span>=<span class="string">"center"</span></div><div class="line">            <span class="attr">android:text</span>=<span class="string">"确定"</span></div><div class="line">            <span class="attr">android:textColor</span>=<span class="string">"@android:color/white"</span></div><div class="line">            <span class="attr">android:textSize</span>=<span class="string">"18sp"</span> /&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>涉及到的其他资源文件如下：</p>
+<ul>
+<li>对话框样式 <strong>styles.xml</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- 全局Dialog样式 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"MyDialog"</span> <span class="attr">parent</span>=<span class="string">"@android:style/Theme.Dialog"</span>&gt;</span><span class="xml"></span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowBackground"</span>&gt;</span>@android:color/transparent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowFrame"</span>&gt;</span>@null<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowNoTitle"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowIsFloating"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowIsTranslucent"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:background"</span>&gt;</span>@android:color/transparent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:backgroundDimEnabled"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>通过设置这些属性可以保证对话框背景透明无黑边。</p>
+<ul>
+<li>确定取消按钮的颜色值 <strong>colors.xml</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"btn_dialog_negative_normal"</span>&gt;</span>#ff0000<span class="tag">&lt;/<span class="name">color</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"btn_dialog_negative_pressed"</span>&gt;</span>#bf0000<span class="tag">&lt;/<span class="name">color</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"btn_dialog_positive_normal"</span>&gt;</span>#368bff<span class="tag">&lt;/<span class="name">color</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"btn_dialog_positive_pressed"</span>&gt;</span>#0067f3<span class="tag">&lt;/<span class="name">color</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>对话框背景 <strong>bg_base_dialog.xml</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">shape</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:shape</span>=<span class="string">"rectangle"</span>&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">corners</span> <span class="attr">android:radius</span>=<span class="string">"4dp"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">solid</span> <span class="attr">android:color</span>=<span class="string">"@android:color/white"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">stroke</span></span></div><div class="line">        <span class="attr">android:width</span>=<span class="string">"1dp"</span></div><div class="line">        <span class="attr">android:color</span>=<span class="string">"#e5e7ea"</span> /&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">shape</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>包含背景、圆角、阴影效果。</p>
+<ul>
+<li>确定按钮背景 <strong>bg_dialog_btn_positive.xml</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">selector</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@color/btn_dialog_positive_normal"</span> <span class="attr">android:state_pressed</span>=<span class="string">"false"</span>&gt;</span><span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@color/btn_dialog_positive_pressed"</span> <span class="attr">android:state_pressed</span>=<span class="string">"true"</span>&gt;</span><span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">selector</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>包含正常和按下的效果。</p>
+<ul>
+<li>取消按钮背景 <strong>bg_dialog_btn_negative.xml</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">selector</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@color/btn_dialog_negative_normal"</span> <span class="attr">android:state_pressed</span>=<span class="string">"false"</span>&gt;</span><span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">android:drawable</span>=<span class="string">"@color/btn_dialog_negative_pressed"</span> <span class="attr">android:state_pressed</span>=<span class="string">"true"</span>&gt;</span><span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">selector</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>包含正常和按下的效果。</p>
+<p>以上就是整个自定义Dialog的所有内容，接下来我们通过一个简单的Demo来演示如何使用它。</p>
+<ul>
+<li><strong>MainActivity.java</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">package</span> com.acker.android.dialog;</div><div class="line"></div><div class="line"><span class="keyword">import</span> android.content.DialogInterface;</div><div class="line"><span class="keyword">import</span> android.os.Bundle;</div><div class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</div><div class="line"><span class="keyword">import</span> android.view.View;</div><div class="line"><span class="keyword">import</span> android.widget.Toast;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    BaseDialog dialog;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        dialog = <span class="keyword">new</span> BaseDialog.Builder(<span class="keyword">this</span>).setTitle(<span class="string">"标题"</span>).setMessage(<span class="string">"内容"</span>)</div><div class="line">                .setPositiveButton(<span class="string">"哈哈"</span>, <span class="keyword">new</span> View.OnClickListener() &#123;</div><div class="line">                    <span class="meta">@Override</span></div><div class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">                        dialog.dismiss();</div><div class="line">                    &#125;</div><div class="line">                &#125;).setOnCancelListener(<span class="keyword">new</span> DialogInterface.OnCancelListener() &#123;</div><div class="line">                    <span class="meta">@Override</span></div><div class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCancel</span><span class="params">(DialogInterface dialogInterface)</span> </span>&#123;</div><div class="line">                        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"cancel"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">                    &#125;</div><div class="line">                &#125;).setOnDismissListener(<span class="keyword">new</span> DialogInterface.OnDismissListener() &#123;</div><div class="line">                    <span class="meta">@Override</span></div><div class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDismiss</span><span class="params">(DialogInterface dialogInterface)</span> </span>&#123;</div><div class="line">                        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"dismiss"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">                    &#125;</div><div class="line">                &#125;).create();</div><div class="line">        dialog.show();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>来看下效果图：</p>
+<p><center><br><img src="http://obc3atr48.bkt.clouddn.com/245941188562351983.png" alt="自定义对话框效果图1"><br></center><br>很丑有木有，不过没关系，这里我们只是展示它的用法，如何把对话框做的好看一点就看各位的发挥了。可以看出自定义的BaseDialog的使用方法与Andorid自身的AlertDialog基本一致，都是通过其Builder类进行对象的构建。</p>
+<p>该自定义对话框还支持显示ProgressBar以及自定义内容填充的功能。</p>
+<ul>
+<li>显示ProgressBar且触摸屏幕不可取消：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">.setProgressBarShow(<span class="keyword">true</span>)</div><div class="line">.setCancelable(<span class="keyword">false</span>)</div></pre></td></tr></table></figure>
+<p>效果图如下：</p>
+<p><center><br><img src="http://obc3atr48.bkt.clouddn.com/360263159663942597.png" alt="自定义对话框效果图2"><br></center></p>
+<ul>
+<li>自定义内容区域且不显示取消按钮：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">View view = getLayoutInflater().inflate(R.layout.dialog_input_amount, <span class="keyword">null</span>);</div><div class="line"><span class="keyword">final</span> EditText amountEdit = (EditText) view.findViewById(R.id.dialog_et_amount);</div><div class="line">amountEdit.setText(<span class="string">"123456789"</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">.setView(view)</div><div class="line">.setNegativeBtnShow(<span class="keyword">false</span>)</div></pre></td></tr></table></figure>
+<ul>
+<li>其对应的布局文件为 <strong>dialog_input_amount.xml</strong>：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span> &gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">EditText</span></span></div><div class="line">        <span class="attr">android:id</span>=<span class="string">"@+id/dialog_et_amount"</span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"40dp"</span></div><div class="line">        <span class="attr">android:layout_marginBottom</span>=<span class="string">"20dp"</span></div><div class="line">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"20dp"</span></div><div class="line">        <span class="attr">android:layout_marginRight</span>=<span class="string">"20dp"</span></div><div class="line">        <span class="attr">android:layout_marginTop</span>=<span class="string">"20dp"</span></div><div class="line">        <span class="attr">android:gravity</span>=<span class="string">"center_vertical"</span></div><div class="line">        <span class="attr">android:paddingLeft</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:paddingRight</span>=<span class="string">"10dp"</span></div><div class="line">        <span class="attr">android:inputType</span>=<span class="string">"numberDecimal"</span></div><div class="line">        <span class="attr">android:singleLine</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">android:textSize</span>=<span class="string">"18sp"</span> &gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">EditText</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>效果图如下：</p>
+<p><center><br><img src="http://obc3atr48.bkt.clouddn.com/704131486458469105.png" alt="自定义对话框效果图3"><br></center><br>综上，可以看出通过Builder模式自定义Dialog既可以维持原有Android对话框的使用方法，同时使用方便，自由度更高，大家完全可以按照各自的需求来对代码作出相应的修改。需要说明的是本文并没有严格按照传统的Builder设计模式来实现对话框，而是做了一些简化以更适合于我们的场景。</p>
+<p>文中所有代码可以在<a href="https://github.com/GuoJinyu/AndroidUtils/tree/master/dialog" target="_blank" rel="external">个人github主页</a>查看和下载。</p>
+<p>另，转载请注明出处！文中若有什么错误希望大家探讨指正！</p>
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/08/03/Android使用Builder模式自定义Dialog/" class="archive-article-date">
+  	<time datetime="2016-08-03T13:30:00.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-08-03</time>
+</a>
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-price-tags"></i>
+	<a class="article-category-link" href="/categories/技术/">技术</a>
+	</div>
+
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/09/18/银行POS交易流程及概念浅析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          银行POS交易流程及概念浅析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/26/Android获取设备IP地址代码与分析/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android获取设备IP地址代码与分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2017 郭晋宇
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+</script>
+
+<script src="/./main.js"></script>
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+    
+<div class="tools-col">
+  <ul class="btn-wrap">
+    
+      <li class="chose" data-hook="tools-section-all"><span class="text">全部</span><i class="icon-book"></i></li>
+    
+    
+      <li data-hook="tools-section-tag"><span class="text">标签</span><i class="icon-price-tags"></i></li>
+    
+    
+      <li data-hook="tools-section-friends"><span class="text">友链</span><i class="icon-link"></i></li>
+    
+    
+      <li data-hook="tools-section-me"><span class="text">我</span><i class="icon-smile"></i></li>
+    
+  </ul>
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all chose">
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-tag">
+    			<div class="widget tagcloud" id="js-tagcloud">
+    				<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/业务/" style="font-size: 10px;">业务</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+    			</div>
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-friends">
+  		
+  			<div class="friends-wrap" id="js-friends">
+  			
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://yikun.github.io/">Yikun</a>
+  	        
+  	          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.dingyoung.com/">ADing</a>
+  	        
+  	        </div>
+  		
+    	</section>
+    
+
+    
+    	<section class="tools-section tools-section-me">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">西电本硕，专注通信七年（LTE、WiFi、Ad-hoc、认知网络），Android开发三年（实验室-&gt;Baidu-&gt;Aisino），目前在学习数据相关知识及技术（Python、爬虫、机器学习），对地图、金融支付、征信业务有一定了解。</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>
