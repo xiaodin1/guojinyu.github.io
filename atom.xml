@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guojinyu.com/"/>
-  <updated>2017-06-02T08:35:12.000Z</updated>
+  <updated>2017-06-07T09:08:11.000Z</updated>
   <id>http://guojinyu.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://guojinyu.com/2017/04/05/Android%20HTTPS%E6%AD%A3%E4%BC%A0/"/>
     <id>http://guojinyu.com/2017/04/05/Android HTTPS正传/</id>
     <published>2017-04-05T14:00:00.000Z</published>
-    <updated>2017-06-02T08:35:12.000Z</updated>
+    <updated>2017-06-07T09:08:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>随着HTTPS的越来越普及，我们在客户端开发过程中越来越多的被要求从HTTP转换为HTTPS，纵然你开发的是普通APP而非浏览器，正确的编写HTTPS网络代码也是至关重要的。但现实是，大部分的HTTPS相关代码中总是存在各种各样的问题，这些问题使得我们的APP在网络通信中存在严重的漏洞，从而丧失了使用HTTPS的意义。</p>
 <p>因此，本文将从以下三个方面来展开介绍，一是对于HTTPS的理解；二是常见的HTTPS的使用误区；三是如何编写正确的HTTPS通信代码，包括使用HttpClient或HttpUrlConnection。</p>
@@ -110,7 +110,7 @@
     <link href="http://guojinyu.com/2016/12/19/Android%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E4%B8%8E%E8%B5%84%E6%BA%90%E5%8C%B9%E9%85%8D/"/>
     <id>http://guojinyu.com/2016/12/19/Android屏幕适配与资源匹配/</id>
     <published>2016-12-19T07:42:00.000Z</published>
-    <updated>2017-06-02T08:33:33.000Z</updated>
+    <updated>2017-06-07T09:08:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>Android屏幕适配是个头疼的问题，同时关于这方面的讲解也是烂大街了，那么为什么还要写这篇博文呢，一方面是想基于Google官方教程和个人开发中的经验总结一份准确精炼的教程，另一方面也是作为一个知识备份。</p>
 <p>那么，通过本文你可以学到以下这些：</p>
@@ -169,7 +169,7 @@
     <link href="http://guojinyu.com/2016/12/07/Android%E4%BA%8C%E7%BB%B4%E7%A0%81%E6%89%AB%E6%8F%8F%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0%E5%8F%8A%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"/>
     <id>http://guojinyu.com/2016/12/07/Android二维码扫描的简单实现及源码分析/</id>
     <published>2016-12-07T11:30:00.000Z</published>
-    <updated>2017-06-02T08:32:52.000Z</updated>
+    <updated>2017-06-07T09:08:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>二维码扫描最近两年简直是风靡移动互联网时代，尤其在国内发展神速。围绕条码扫码功能，首先说说通过本文你可以知道啥。一，如何在你的APP中快速集成一维码、二维码扫描功能；二，大概了解条码扫描功能的实现原理以及理解各个模块的代码。但是，本文不包含条码的编解码原理，如有兴趣，请自行查阅。</p>
 <h2 id="条码扫描功能的快速集成"><a href="#条码扫描功能的快速集成" class="headerlink" title="条码扫描功能的快速集成"></a>条码扫描功能的快速集成</h2><p>默认你使用了Android Stuidio进行开发，直接使用这个开源项目<a href="https://github.com/GuoJinyu/SimpleZXing" target="_blank" rel="external">SimpleZXing</a>,它是在ZXing库的作者为Android写的条码扫描APP Barcode Scanner的基础上精简和修改而成的。<br>你可以通过简单的两步就可以实现条码扫描的功能。</p>
@@ -243,7 +243,7 @@
     <link href="http://guojinyu.com/2016/09/18/%E9%93%B6%E8%A1%8CPOS%E4%BA%A4%E6%98%93%E6%B5%81%E7%A8%8B%E5%8F%8A%E6%A6%82%E5%BF%B5%E6%B5%85%E6%9E%90/"/>
     <id>http://guojinyu.com/2016/09/18/银行POS交易流程及概念浅析/</id>
     <published>2016-09-18T10:58:00.000Z</published>
-    <updated>2017-06-02T08:32:24.000Z</updated>
+    <updated>2017-06-07T09:08:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>银行的交易体系是一套比较复杂的系统，本文将就POS机交易涉及到的一些概念、流程等作简要介绍。</p>
 <h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>首先，解释一下我们在日常生活或者POS等支付系统开发时经常遇到的一些名词的基本概念。</p>
@@ -333,7 +333,7 @@
     <link href="http://guojinyu.com/2016/08/03/Android%E4%BD%BF%E7%94%A8Builder%E6%A8%A1%E5%BC%8F%E8%87%AA%E5%AE%9A%E4%B9%89Dialog/"/>
     <id>http://guojinyu.com/2016/08/03/Android使用Builder模式自定义Dialog/</id>
     <published>2016-08-03T13:30:00.000Z</published>
-    <updated>2017-06-02T08:34:31.000Z</updated>
+    <updated>2017-06-07T09:08:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>首先说说为啥要自定义Dialog，在任何软件操作系统中，Dialog即对话框都是一种重要的交互模式与信息载体，而Android系统本身的Dialog拥有固定的样式，并且在5.0后采用Material Design设计风格的Dialog美观大气。但是我们开发人员在实际项目过程中遇到的需求是多种多样的，有时我们要匹配APP自己的设计风格，有时我们会觉得系统的对话框使用起来不够自由，因此自己定义一个适合自己的Dialog是很有必要的。</p>
 <p>然后为什么要用Builder模式呢，Builder设计模式是一步步创建一个复杂对象的创建型模式，它允许用户在不知道内部构建细节的情况下，可以更精细地控制对象的构造流程。它的优点就在于将对象的构建和表示分离从而解耦。我们都知道Android系统自身的对话框如AlertDialog就采用了Builder模式，因此可见Builder模式很适合用来构建Dialog对象。</p>
@@ -427,7 +427,7 @@
     <link href="http://guojinyu.com/2016/07/26/Android%E8%8E%B7%E5%8F%96%E8%AE%BE%E5%A4%87IP%E5%9C%B0%E5%9D%80%E4%BB%A3%E7%A0%81%E4%B8%8E%E5%88%86%E6%9E%90/"/>
     <id>http://guojinyu.com/2016/07/26/Android获取设备IP地址代码与分析/</id>
     <published>2016-07-26T11:00:00.000Z</published>
-    <updated>2017-06-02T08:33:17.000Z</updated>
+    <updated>2017-06-07T09:08:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>一直以来，好像没有一段标准的代码能提供Android设备此刻的IP地址，究其原因，Android设备的网卡可能不只一个，如蜂窝网卡、WiFi网卡，而且同一个网卡也可能拥有不止一个IP地址。基于此，一个Android终端很有可能同时拥有多个IP地址（不只是同时拥有IPv4和IPv6地址），比如开启热点共享蜂窝网络的时候，蜂窝网卡拥有一个IPv4地址来访问外网，WiFi网卡拥有一个IPv4地址来作为内网的网关。</p>
 <p>网上比较流行的获取Android设备IP地址的代码有以下几种，下面我们来一一分析一下。</p>
@@ -495,7 +495,7 @@
     <link href="http://guojinyu.com/2016/06/21/Java%E4%B8%ADString%E5%92%8Cbyte%5B%5D%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E6%B5%85%E6%9E%90/"/>
     <id>http://guojinyu.com/2016/06/21/Java中String和byte[]间的转换浅析/</id>
     <published>2016-06-21T06:00:00.000Z</published>
-    <updated>2017-06-02T08:34:52.000Z</updated>
+    <updated>2017-06-07T09:08:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>Java语言中字符串类型和字节数组类型相互之间的转换经常发生，网上的分析及代码也比较多，本文将分析总结常规的byte[]和String间的转换以及十六进制String和byte[]间相互转换的原理及实现。</p>
 <h2 id="1-String转byte"><a href="#1-String转byte" class="headerlink" title="1. String转byte[]"></a>1. String转byte[]</h2><p>首先我们来分析一下常规的String转byte[]的方法，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] strToByteArray(String str) &#123;</div><div class="line">    <span class="keyword">if</span> (str == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">byte</span>[] byteArray = str.getBytes();</div><div class="line">    <span class="keyword">return</span> byteArray;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
