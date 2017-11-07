@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://guojinyu.com/"/>
-  <updated>2017-06-07T09:08:11.000Z</updated>
+  <updated>2017-11-07T02:52:21.192Z</updated>
   <id>http://guojinyu.com/</id>
   
   <author>
@@ -14,6 +14,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>(微信&amp;支付宝)支付功能&amp;场景示意图</title>
+    <link href="http://guojinyu.com/2017/11/07/(%E5%BE%AE%E4%BF%A1&amp;%E6%94%AF%E4%BB%98%E5%AE%9D)%E6%94%AF%E4%BB%98%E5%8A%9F%E8%83%BD&amp;%E5%9C%BA%E6%99%AF%E7%A4%BA%E6%84%8F%E5%9B%BE/"/>
+    <id>http://guojinyu.com/2017/11/07/(微信&amp;支付宝)支付功能&amp;场景示意图/</id>
+    <published>2017-11-07T02:50:00.000Z</published>
+    <updated>2017-11-07T02:52:21.192Z</updated>
+    
+    <content type="html"><![CDATA[<p>许久没有写博客了，有时候写再多字不如一幅图来的简单直接。<br>移动支付如火如荼，所以，如下：</p>
+<center><br><img src="http://obc3atr48.bkt.clouddn.com/%28%E5%BE%AE%E4%BF%A1&amp;%E6%94%AF%E4%BB%98%E5%AE%9D%29%E6%94%AF%E4%BB%98%E5%8A%9F%E8%83%BD&amp;%E5%9C%BA%E6%99%AF%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="(微信&amp;支付宝)支付功能&amp;场景示意图"><br></center>
+
+<p>谢绝转载！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;许久没有写博客了，有时候写再多字不如一幅图来的简单直接。&lt;br&gt;移动支付如火如荼，所以，如下：&lt;/p&gt;
+&lt;center&gt;&lt;br&gt;&lt;img src=&quot;http://obc3atr48.bkt.clouddn.com/%28%E5%BE%AE%E4%BF%A1&amp;amp;%E6%
+    
+    </summary>
+    
+      <category term="技术" scheme="http://guojinyu.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="业务" scheme="http://guojinyu.com/tags/%E4%B8%9A%E5%8A%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>Android HTTPS正传</title>
